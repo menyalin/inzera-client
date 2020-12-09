@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
+      <v-col cols="7">
         <list-header />
         <v-list subheader>
           <v-subheader>Каталог</v-subheader>
@@ -24,6 +24,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import listHeader from './listHeader'
 export default {
   data: () => ({ catalog: [] }),
   methods: {
@@ -32,6 +33,9 @@ export default {
   },
   mounted() {
     this.getCatalog().then(data => (this.catalog = data))
+  },
+  components: {
+    listHeader
   }
 }
 </script>

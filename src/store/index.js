@@ -21,7 +21,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    getCatalog({ commit }, payload) {
+    getCatalog(store, payload) {
       return new Promise((resolve, reject) => {
         api
           .get('/catalog')
@@ -30,7 +30,24 @@ export default new Vuex.Store({
           })
           .catch(e => reject(e))
       })
+    },
+    getImageUrls(store, payload) {
+      return new Promise((resolve, reject) => {
+        api
+          .get('/catalog/images', {
+            params: {
+              folder: payload
+            }
+          })
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(e => reject(e))
+      })
     }
+  },
+  getters: {
+    baseUrl: () => 'http://localhost:3000/api/'
   },
   modules: {}
 })
