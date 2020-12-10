@@ -5,6 +5,7 @@
       <v-card-text>
         <v-text-field label="Название" hint="Название элемента для отображения в списке" />
         <v-text-field label="Рейтинг" hint="Очередность вывода" />
+        <span>mainImageUrl: {{ mainImageUrl }}</span>
         <v-textarea
           v-if="type === 'item'"
           outlined
@@ -13,7 +14,11 @@
         ></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <image-picker-dialog buttonText="Иконка группы" :maxWidthDialog="1300" />
+        <image-picker-dialog
+          buttonText="Иконка группы"
+          :maxWidthDialog="1300"
+          v-model="mainImageUrl"
+        />
         <v-spacer />
         <v-btn color="primary" @click="cancel">Отмена</v-btn>
         <v-btn type="submit" color="primary">Сохранить</v-btn>
@@ -26,7 +31,9 @@
 import imagePickerDialog from '../imagePickerDialog'
 export default {
   name: 'catalogForm',
-  data: () => ({}),
+  data: () => ({
+    mainImageUrl: null
+  }),
   components: {
     imagePickerDialog
   },

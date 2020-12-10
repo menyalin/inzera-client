@@ -11,13 +11,14 @@
 
         <v-card-text>
           <div class="gallery-wrapper">
-            <div class="gallery-item" v-for="image of images" :key="image.url">
-              <p class="pa-0 ma-0">
-                <small>FileName: {{ image.name }}</small>
-                <br />
-                <small>Folders: {{ image.folders }}</small>
-              </p>
-              <v-img :src="baseUrl + image.url" aspect-ratio="1" max-height="80" max-width="80" />
+            <div
+              class="gallery-item ma-2"
+              :class="{ selected: image.url === selected }"
+              v-for="image of images"
+              :key="image.url"
+              @click="select(image)"
+            >
+              <v-img :src="baseUrl + image.url" aspect-ratio="1" max-height="90" max-width="90" />
             </div>
           </div>
         </v-card-text>
@@ -26,11 +27,11 @@
           <v-spacer></v-spacer>
 
           <v-btn color="green darken-1" text @click="close">
-            Disagree
+            Отмена
           </v-btn>
 
-          <v-btn color="green darken-1" text @click="close">
-            Agree
+          <v-btn color="green darken-1" text @click="save">
+            Применить
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -43,6 +44,9 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'imagePickerDialog',
   props: {
+    value: {
+      type: [String]
+    },
     buttonText: {
       type: String,
       default: 'Open Dialog'
@@ -58,19 +62,31 @@ export default {
   },
   data: () => ({
     dialog: false,
-    images: []
+    images: [],
+    selected: null
   }),
   methods: {
     ...mapActions(['getImageUrls']),
+    select(image) {
+      if (this.selected === image.url) {
+        this.selected = null
+      } else {
+        this.selected = image.url
+      }
+    },
     open() {
       this.getImageUrls('./static/svg')
         .then(res => {
           this.images = res
+          this.dialog = true
         })
         .catch(e => {
           this.$store.commit('setError', e.message)
         })
-      this.dialog = true
+    },
+    save() {
+      this.$emit('input', this.selected)
+      this.dialog = false
     },
     close() {
       this.dialog = false
@@ -88,6 +104,10 @@ export default {
   flex-wrap: wrap;
 }
 .gallery-item {
-  flex-basis: 100px;
+  flex-basis: 90px;
+}
+.selected {
+  border: 2px solid gray;
+  border-radius: 4px;
 }
 </style>
