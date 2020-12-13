@@ -18,7 +18,7 @@
               :key="image.url"
               @click="select(image)"
             >
-              <v-img :src="baseUrl + image.url" aspect-ratio="1" max-height="90" max-width="90" />
+              <v-img :src="baseUrl + image.url" max-width="90" />
             </div>
           </div>
         </v-card-text>
@@ -44,8 +44,16 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'imagePickerDialog',
   props: {
+    multiple: {
+      type: Boolean,
+      default: false
+    },
     value: {
       type: [String]
+    },
+    folder: {
+      type: String,
+      default: './static/svg'
     },
     buttonText: {
       type: String,
@@ -75,7 +83,7 @@ export default {
       }
     },
     open() {
-      this.getImageUrls('./static/svg')
+      this.getImageUrls(this.folder)
         .then(res => {
           this.images = res
           this.dialog = true

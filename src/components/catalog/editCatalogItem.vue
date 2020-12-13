@@ -4,9 +4,9 @@
       <v-col md="6" offset-md="3">
         <catalog-form
           :updatedItem="updatedGroup"
-          title="Новая группа"
+          :parentProp="parent"
           :loading="loading"
-          type="group"
+          :type="type"
           :parentItems="parentItems"
           @submit-form="submit"
           @cancel-form="cancel"
@@ -21,11 +21,15 @@ import { mapActions } from 'vuex'
 import catalogForm from './catalogForm'
 
 export default {
-  name: 'editCatalogGroup',
+  name: 'editCatalogItem',
+  props: {
+    type: String
+  },
   data: () => ({
     loading: false,
     parentItems: [],
-    updatedGroup: {}
+    updatedGroup: {},
+    parent: null
   }),
   components: {
     catalogForm
@@ -46,8 +50,12 @@ export default {
     }
   },
   created() {
+    if (this.$route.params.parent) this.parent = this.$route.params.parent
     this.loading = true
-    this.getCatalog({ level: 'root' })
+    let options = {}
+    if (this.type === 'group') options.parent = 'root'
+    else options.forItems = true
+    this.getCatalog(options)
       .then(res => {
         this.parentItems = res.map(item => ({
           value: item._id,

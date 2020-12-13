@@ -13,12 +13,12 @@
         />
       </v-card-title>
       <v-card-text>
-        {{ updatedItem }}
         <v-text-field
           label="Название"
           hint="Название элемента для отображения в списке"
           v-model="name"
         />
+        <v-text-field label="Артикул" v-model="sku" />
         <v-text-field label="Рейтинг" hint="Очередность вывода" v-model="rank" />
         <v-select label="Родитель" multiple :items="parentItems" v-model="parent" clearable chips />
         <v-textarea
@@ -31,13 +31,23 @@
       </v-card-text>
       <v-card-actions>
         <image-picker-dialog
+          v-if="type === 'group'"
           buttonText="Иконка группы"
-          :maxWidthDialog="1300"
+          :maxWidthDialog="800"
           v-model="mainImageUrl"
+        />
+        <image-picker-dialog
+          v-else
+          dialogTitle="Выберете фотографии"
+          multiple
+          buttonText="Загрузить фото"
+          :maxWidthDialog="800"
+          v-model="images"
+          folder="./static/sku_images"
         />
         <v-spacer />
         <v-btn color="primary" @click="cancel">Отмена</v-btn>
-        <v-btn type="submit" color="primary" :disabled="!name || loading">Сохранить</v-btn>
+        <v-btn type="submit" color="primary" :disabled="!formValid || loading">Сохранить</v-btn>
       </v-card-actions>
     </form>
   </v-card>
@@ -52,17 +62,26 @@ export default {
     _id: null,
     mainImageUrl: null,
     parent: [],
+    images: [],
     name: null,
     rank: 50,
-    description: null
+    description: null,
+    sku: null
   }),
   components: {
     imagePickerDialog
   },
   computed: {
-    ...mapGetters(['baseUrl'])
+    ...mapGetters(['baseUrl']),
+    formValid() {
+      return (
+        (this.type === 'group' && this.name) ||
+        (this.type === 'item' && this.name && this.parent.length >= 1)
+      )
+    }
   },
   props: {
+    parentProp: String,
     loading: {
       type: Boolean,
       default: false
@@ -85,16 +104,23 @@ export default {
       type: Object
     }
   },
+  mounted() {
+    if (this.parentProp) {
+      this.parent.push(this.parentProp)
+    }
+  },
   methods: {
     submit() {
-      if (this.name) {
+      if (this.formValid) {
         let catalogItem = {
           name: this.name,
           type: this.type,
           rank: this.rank,
           parent: this.parent,
           mainImageUrl: this.mainImageUrl,
-          description: this.description
+          description: this.description,
+          sku: this.sku,
+          images: this.images
         }
         if (this._id) catalogItem._id = this._id
         this.$emit('submit-form', catalogItem)
@@ -115,6 +141,8 @@ export default {
           this.rank = val.rank
           this.mainImageUrl = val.mainImageUrl
           this.description = val.description
+          this.sku = val.sku
+          this.images = val.images
         }
       },
       immediate: true

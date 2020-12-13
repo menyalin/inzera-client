@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import catalog from '@/components/catalog/index'
-import editCatalogGroup from '@/components/catalog/editCatalogGroup'
-import newCatalogItem from '@/components/catalog/newCatalogItem'
+import editCatalogItem from '@/components/catalog/editCatalogItem'
 import allImages from '@/components/allImages/index.vue'
 
 Vue.use(VueRouter)
@@ -10,19 +9,38 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'catalog',
     component: catalog
   },
   {
     path: '/catalog/newItem',
-    component: newCatalogItem
+    name: 'newItem',
+    component: editCatalogItem,
+    props: {
+      type: 'item'
+    }
   },
   {
     path: '/catalog/newGroup',
-    component: editCatalogGroup
+    name: 'newGroup',
+    component: editCatalogItem,
+    props: {
+      type: 'group'
+    }
   },
   {
     path: '/catalog/editGroup/:id',
-    component: editCatalogGroup
+    component: editCatalogItem,
+    props: {
+      type: 'group'
+    }
+  },
+  {
+    path: '/catalog/editItem/:id',
+    component: editCatalogItem,
+    props: {
+      type: 'item'
+    }
   },
   {
     path: '/images',
