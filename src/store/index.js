@@ -13,18 +13,20 @@ export default new Vuex.Store({
     setLoading({ loading }, payload) {
       loading = payload
     },
-    setError({ error }, payload) {
-      error = payload
+    setError(state, payload) {
+      state.error = payload
     },
-    clearError({ error }) {
-      error = null
+    clearError(state) {
+      state.error = null
     }
   },
   actions: {
     getCatalog(store, payload) {
       return new Promise((resolve, reject) => {
         api
-          .get('/catalog')
+          .get('/catalog', {
+            params: payload
+          })
           .then(response => {
             resolve(response.data)
           })
@@ -39,15 +41,22 @@ export default new Vuex.Store({
               folder: payload
             }
           })
-          .then(response => {
-            resolve(response.data)
-          })
+          .then(response => resolve(response.data))
+          .catch(e => reject(e))
+      })
+    },
+    newCatalogItem(store, payload) {
+      return new Promise((resolve, reject) => {
+        api
+          .post('/catalog', payload)
+          .then(response => resolve(response.data))
           .catch(e => reject(e))
       })
     }
   },
   getters: {
-    baseUrl: () => 'http://localhost:3000/api/'
+    baseUrl: () => 'http://localhost:3000/api/',
+    error: ({ error }) => error
   },
   modules: {}
 })
