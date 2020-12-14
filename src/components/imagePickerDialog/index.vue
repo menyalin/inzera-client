@@ -7,6 +7,8 @@
       <v-card>
         <v-card-title>
           {{ dialogTitle }}
+          <v-spacer />
+          <v-text-field label="Поиск" v-model="search" class="px-3" />
         </v-card-title>
 
         <v-card-text>
@@ -18,7 +20,7 @@
               :key="image.url"
               @click="select(image)"
             >
-              <v-img :src="baseUrl + image.url" max-width="90" />
+              <v-img :src="baseUrl + image.url" max-width="90" height="90" />
             </div>
           </div>
         </v-card-text>
@@ -69,6 +71,7 @@ export default {
     }
   },
   data: () => ({
+    search: '',
     dialog: false,
     images: [],
     selected: null
@@ -76,10 +79,10 @@ export default {
   methods: {
     ...mapActions(['getImageUrls']),
     select(image) {
-      if (this.selected === image.url) {
-        this.selected = null
+      if (this.multiple) {
       } else {
-        this.selected = image.url
+        if (this.selected === image.url) this.selected = null
+        else this.selected = image.url
       }
     },
     open() {

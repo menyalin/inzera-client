@@ -33,12 +33,13 @@
         <image-picker-dialog
           v-if="type === 'group'"
           buttonText="Иконка группы"
+          folder="./static/svg"
           :maxWidthDialog="800"
           v-model="mainImageUrl"
         />
         <image-picker-dialog
           v-else
-          dialogTitle="Выберете фотографии"
+          dialogTitle="Выбор фотографий"
           multiple
           buttonText="Загрузить фото"
           :maxWidthDialog="800"
