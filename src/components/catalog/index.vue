@@ -10,32 +10,22 @@
         <v-list subheader>
           <v-list-item v-if="parent.length >= 2" @click="back" dense>
             <v-list-item-content>
-              <v-list-item-title>Назад</v-list-item-title>
+              <v-list-item-title>
+                <v-icon>mdi-arrow-top-left-bold-outline</v-icon>
+                Назад
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <hr v-if="parent.length >= 2" />
-          <v-list-item v-for="item of catalog" :key="item._id" @click="click(item)">
-            <v-list-item-avatar tile>
-              <v-avatar size="30px" v-if="item.mainImageUrl">
-                <v-img :src="baseUrl + item.mainImageUrl" />
-              </v-avatar>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn
-                icon
-                :to="
-                  item.type === 'group'
-                    ? '/catalog/editGroup/' + item._id
-                    : '/catalog/editItem/' + item._id
-                "
-              >
-                <v-icon color="green">mdi-pencil</v-icon>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
+          <v-divider v-if="parent.length >= 2" />
+          <div v-for="item of catalog" :key="item._id">
+            <list-item-group
+              :item="item"
+              :baseUrl="baseUrl"
+              @click="click(item)"
+              v-if="item.type === 'group'"
+            />
+            <list-item-sku :item="item" :baseUrl="baseUrl" />
+          </div>
         </v-list>
       </v-col>
     </v-row>
@@ -45,6 +35,9 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import listHeader from './listHeader'
+import listItemGroup from './listItemGroup'
+import listItemSku from './listItemSku'
+
 export default {
   data: () => ({
     catalog: [],
@@ -66,7 +59,9 @@ export default {
     }
   },
   components: {
-    listHeader
+    listHeader,
+    listItemGroup,
+    listItemSku
   },
   watch: {
     parent: {

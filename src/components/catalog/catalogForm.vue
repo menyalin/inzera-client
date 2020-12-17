@@ -135,7 +135,6 @@ export default {
     updatedItem: {
       handler: function(val) {
         if (val._id) {
-          console.log('updatedItem:', val)
           this._id = val._id
           this.name = val.name
           this.parent = val.parent
