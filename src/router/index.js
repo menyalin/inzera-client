@@ -1,46 +1,20 @@
+
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import catalog from '@/components/catalog/index'
-import editCatalogItem from '@/components/catalog/editCatalogItem'
+
+import catalogRoutes from './catalogRoutes'
+
+import homePage from '@/components/homePage'
 import allImages from '@/components/allImages/index.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
+  ...catalogRoutes,
   {
     path: '/',
-    name: 'catalog',
-    component: catalog
-  },
-  {
-    path: '/catalog/newItem',
-    name: 'newItem',
-    component: editCatalogItem,
-    props: {
-      type: 'item'
-    }
-  },
-  {
-    path: '/catalog/newGroup',
-    name: 'newGroup',
-    component: editCatalogItem,
-    props: {
-      type: 'group'
-    }
-  },
-  {
-    path: '/catalog/editGroup/:id',
-    component: editCatalogItem,
-    props: {
-      type: 'group'
-    }
-  },
-  {
-    path: '/catalog/editItem/:id',
-    component: editCatalogItem,
-    props: {
-      type: 'item'
-    }
+    name: 'homePage',
+    component: homePage
   },
   {
     path: '/images',

@@ -18,7 +18,7 @@
           hint="Название элемента для отображения в списке"
           v-model="name"
         />
-        <v-text-field label="Артикул" v-model="sku" />
+        <v-text-field v-if="!isGroup" label="Артикул" v-model="sku" />
         <v-text-field label="Рейтинг" hint="Очередность вывода" v-model="rank" />
         <v-select label="Родитель" multiple :items="parentItems" v-model="parent" clearable chips />
         <v-textarea
@@ -27,7 +27,14 @@
           label="Описание"
           hint="Описание товара"
           v-model="description"
-        ></v-textarea>
+        />
+        <v-checkbox
+          v-if="isGroup"
+          hide-details
+          label="Может содержать подгруппы"
+          v-model="containSubgroups"
+        />
+        <v-checkbox v-if="isGroup" hide-details label="Может содержать SKU" v-model="containSku" />
       </v-card-text>
       <v-card-actions>
         <image-picker-dialog
@@ -67,7 +74,9 @@ export default {
     name: null,
     rank: 50,
     description: null,
-    sku: null
+    sku: null,
+    containSubgroups: false,
+    containSku: false
   }),
   components: {
     imagePickerDialog
@@ -79,6 +88,9 @@ export default {
         (this.type === 'group' && this.name) ||
         (this.type === 'item' && this.name && this.parent.length >= 1)
       )
+    },
+    isGroup() {
+      return this.type === 'group'
     }
   },
   props: {
@@ -121,7 +133,9 @@ export default {
           mainImageUrl: this.mainImageUrl,
           description: this.description,
           sku: this.sku,
-          images: this.images
+          images: this.images,
+          containSubgroups: this.containSubgroups,
+          containSku: this.containSku
         }
         if (this._id) catalogItem._id = this._id
         this.$emit('submit-form', catalogItem)
@@ -143,6 +157,8 @@ export default {
           this.description = val.description
           this.sku = val.sku
           this.images = val.images
+          this.containSubgroups = val.containSubgroups
+          this.containSku = val.containSku
         }
       },
       immediate: true

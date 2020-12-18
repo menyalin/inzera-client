@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar app color="primary" dense dark>
       <v-spacer />
-      <v-btn text to="/">Каталог</v-btn>
+      <v-btn text to="/catalog">Каталог</v-btn>
       <v-btn text to="/images">images</v-btn>
     </v-app-bar>
 
