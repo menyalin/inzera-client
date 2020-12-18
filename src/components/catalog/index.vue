@@ -2,6 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="7" offset-md="3" md="4">
+        <p>parent: {{ parent }}</p>
         <list-header
           :parent="parent[parent.length - 1]"
           :groupDisabled="parent.length >= 3"
@@ -63,6 +64,9 @@ export default {
     listItemGroup,
     listItemSku
   },
+  // props: {
+  //   parent: String
+  // },
   watch: {
     parent: {
       handler: function(val) {
