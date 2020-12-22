@@ -1,15 +1,15 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="7" offset-md="3" md="4">
-        <p>parent: {{ parent }}</p>
+    <v-row v-if="!loading">
+      <v-col cols="8" offset-md="3" md="5">
         <list-header
-          :parent="parent[parent.length - 1]"
-          :groupDisabled="parent.length >= 3"
-          :itemDisabled="parent.length < 3"
+          :parent="$route.params.group"
+          :itemDisabled="!containSku($route.params.group)"
+          :groupDisabled="!containSubgroups($route.params.group)"
         />
+        <catalog-navigation v-if="$route.params.group" :groupId="$route.params.group" />
         <v-list subheader>
-          <v-list-item v-if="parent.length >= 2" @click="back" dense>
+          <!-- <v-list-item v-if="parent.length >= 2" @click="back" dense>
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon>mdi-arrow-top-left-bold-outline</v-icon>
@@ -17,17 +17,22 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-divider v-if="parent.length >= 2" />
-          <div v-for="item of catalog" :key="item._id">
+          <v-divider v-if="parent.length >= 2" /> -->
+          <div v-for="item of catalogList" :key="item._id">
             <list-item-group
               :item="item"
               :baseUrl="baseUrl"
               @click="click(item)"
               v-if="item.type === 'group'"
             />
-            <list-item-sku :item="item" :baseUrl="baseUrl" />
+            <list-item-sku v-else :item="item" :baseUrl="baseUrl" />
           </div>
         </v-list>
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col>
+        <spinner />
       </v-col>
     </v-row>
   </v-container>
@@ -35,48 +40,51 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import spinner from '@/components/spinner'
+import catalogNavigation from './catalogNavigation'
 import listHeader from './listHeader'
 import listItemGroup from './listItemGroup'
 import listItemSku from './listItemSku'
 
 export default {
   data: () => ({
-    catalog: [],
-    parent: ['root']
+    catalog: []
   }),
   methods: {
     ...mapActions(['getCatalog']),
-    back() {
-      if (this.parent.length >= 2) {
-        this.parent = this.parent.slice(0, this.parent.length - 1)
-      }
-    },
     click(item) {
-      this.parent.push(item._id)
-      this.getCatalogItem({ parent: item._id })
-    },
-    getCatalogItem(options) {
-      this.getCatalog(options).then(data => (this.catalog = data))
+      if (item.type === 'group' && this.$route.params.group !== item._id) {
+        this.$router.push('/catalog/' + item._id)
+      }
     }
   },
   components: {
+    spinner,
     listHeader,
     listItemGroup,
-    listItemSku
+    listItemSku,
+    catalogNavigation
   },
-  // props: {
-  //   parent: String
-  // },
+  props: {
+    group: String,
+    sku: String
+  },
   watch: {
-    parent: {
-      handler: function(val) {
-        this.getCatalogItem({ parent: val[val.length - 1] })
+    $route: {
+      handler: function(to, from) {
+        let options = {}
+        if (to.params.group) {
+          options.parent = to.params.group
+        } else {
+          options.parent = 'root'
+        }
+        this.getCatalog(options)
       },
       immediate: true
     }
   },
   computed: {
-    ...mapGetters(['baseUrl'])
+    ...mapGetters(['baseUrl', 'catalogList', 'loading', 'containSku', 'containSubgroups'])
   }
 }
 </script>

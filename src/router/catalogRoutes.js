@@ -4,24 +4,26 @@ import editCatalogItem from '@/components/catalog/editCatalogItem'
 export default [
   {
     path: '/catalog',
-    name: 'catalog',
+    name: 'catalogRoot',
     component: catalog
     // props: {
-    //   parent: 'root'
+    //   group: 'root'
     // }
   },
   {
-    path: '/catalog/:groupId',
-    name: 'catalog',
-    component: catalog
+    path: '/catalog/:group/:sku',
+    component: catalog,
+    name: 'catalogItem'
+    // props: true
   },
   {
-    path: '/catalog/:groupId/:skuId',
-    name: 'catalog',
-    component: catalog
+    path: '/catalog/:group',
+    component: catalog,
+    name: 'catalogGroup'
+    // props: true
   },
   {
-    path: '/catalog/newItem',
+    path: '/newSKU',
     name: 'newItem',
     component: editCatalogItem,
     props: {
@@ -29,7 +31,7 @@ export default [
     }
   },
   {
-    path: '/catalog/newGroup',
+    path: '/newCatalogGroup',
     name: 'newGroup',
     component: editCatalogItem,
     props: {
@@ -37,14 +39,14 @@ export default [
     }
   },
   {
-    path: '/catalog/editGroup/:id',
+    path: '/editCatalogGroup/:id',
     component: editCatalogItem,
     props: {
       type: 'group'
     }
   },
   {
-    path: '/catalog/editItem/:id',
+    path: '/editSKU/:id',
     component: editCatalogItem,
     props: {
       type: 'item'

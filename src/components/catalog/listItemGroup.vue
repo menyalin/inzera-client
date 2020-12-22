@@ -9,12 +9,7 @@
       <v-list-item-title>{{ item.name }}</v-list-item-title>
     </v-list-item-content>
     <v-list-item-action>
-      <v-btn
-        icon
-        :to="
-          item.type === 'group' ? '/catalog/editGroup/' + item._id : '/catalog/editItem/' + item._id
-        "
-      >
+      <v-btn icon :to="`/editCatalogGroup/${item._id}`">
         <v-icon color="green">mdi-pencil</v-icon>
       </v-btn>
     </v-list-item-action>

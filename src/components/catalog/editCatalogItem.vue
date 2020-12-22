@@ -7,7 +7,7 @@
           :parentProp="parent"
           :loading="loading"
           :type="type"
-          :parentItems="parentItems"
+          :parentItems="parentItems(type)"
           @submit-form="submit"
           @cancel-form="cancel"
         />
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import catalogForm from './catalogForm'
 
 export default {
@@ -27,12 +27,14 @@ export default {
   },
   data: () => ({
     loading: false,
-    parentItems: [],
     updatedGroup: {},
     parent: null
   }),
   components: {
     catalogForm
+  },
+  computed: {
+    ...mapGetters(['parentItems'])
   },
   methods: {
     ...mapActions(['getCatalog', 'newCatalogItem']),
@@ -40,7 +42,7 @@ export default {
       this.loading = true
       this.newCatalogItem(newGroup)
         .then(res => {
-          this.$router.go(-1)
+          this.$router.push(`/catalog${this.parent ? '/' + this.parent : ''}`)
         })
         .catch(e => this.$store.commit('setError', e.message))
         .finally(() => (this.loading = false))
@@ -50,20 +52,7 @@ export default {
     }
   },
   created() {
-    if (this.$route.params.parent) this.parent = this.$route.params.parent
-    this.loading = true
-    let options = {}
-    if (this.type === 'group') options.parent = 'root'
-    else options.forItems = true
-    this.getCatalog(options)
-      .then(res => {
-        this.parentItems = res.map(item => ({
-          value: item._id,
-          text: item.name
-        }))
-      })
-      .catch(e => this.$store.commit('setError', e.message))
-      .finally(() => (this.loading = false))
+    if (this.$route.params.group) this.parent = this.$route.params.group
     if (this.$route.params.id) {
       this.getCatalog({ _id: this.$route.params.id })
         .then(res => {
