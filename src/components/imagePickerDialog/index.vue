@@ -51,7 +51,7 @@ export default {
       default: false
     },
     value: {
-      type: [String]
+      type: String
     },
     folder: {
       type: String,

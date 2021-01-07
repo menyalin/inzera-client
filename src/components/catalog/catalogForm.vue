@@ -47,7 +47,6 @@
         <image-picker-dialog
           v-else
           dialogTitle="Выбор фотографий"
-          multiple
           buttonText="Загрузить фото"
           :maxWidthDialog="800"
           v-model="images"
@@ -70,7 +69,7 @@ export default {
     _id: null,
     mainImageUrl: null,
     parent: [],
-    images: [],
+    images: null,
     name: null,
     rank: 50,
     description: null,

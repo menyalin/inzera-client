@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-subheader>
-      {{ parentById(groupId) ? parentById(groupId).name : null }}
+      {{ !!groupId && parentById(groupId) ? parentById(groupId).name : null }}
     </v-subheader>
   </div>
 </template>
@@ -12,8 +12,7 @@ export default {
   name: 'catalogNavigation',
   props: {
     groupId: {
-      type: String,
-      required: true
+      type: String
     }
   },
   computed: {

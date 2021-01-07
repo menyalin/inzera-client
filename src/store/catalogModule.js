@@ -3,11 +3,18 @@ import api from '@/api'
 export default {
   state: {
     catalogList: [],
-    parents: []
+    parents: [],
+    allCatalogItems: []
   },
   mutations: {
     setCatalogList(state, payload) {
       state.catalogList = payload
+    },
+    addToAllCatalogItems(state, items) {
+      state.allCatalogItems = items.map(item => ({
+        value: item._id,
+        text: `${item.name}  - ${item.sku}`
+      }))
     },
     addToParent({ parents }, payload) {
       payload.forEach(item => {
@@ -27,8 +34,13 @@ export default {
         .then(response => commit('addToParent', response.data))
         .catch(e => commit('setError', e.message))
     },
+    getCatalogItemsForAutocomplete({ commit }) {
+      api
+        .get('/catalog', { params: { allItems: true } })
+        .then(({ data }) => commit('addToAllCatalogItems', data))
+        .catch(e => commit('setError', e.message))
+    },
     getCatalog({ commit }, payload) {
-      // commit('setLoading', true)
       return new Promise((resolve, reject) => {
         api
           .get('/catalog', {
@@ -41,9 +53,7 @@ export default {
           })
           .catch(e => {
             commit('setError', e.message)
-          })
-          .finally(() => {
-            commit('setLoading', false)
+            reject(e)
           })
       })
     },
@@ -81,6 +91,7 @@ export default {
         text: item.name
       }))
     },
-    parentById: ({ parents }) => id => parents.find(item => item._id === id)
+    parentById: ({ parents }) => id => parents.find(item => item._id === id),
+    allCatalogItems: ({ allCatalogItems }) => allCatalogItems
   }
 }

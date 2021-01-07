@@ -13,6 +13,7 @@ module.exports = {
     'comma-dangle': ['error', 'never'],
     'space-before-function-paren': ['error', 'never'],
     quotes: ['error', 'single', { avoidEscape: true }],
-    semi: ['error', 'never']
+    semi: ['error', 'never'],
+    'vue/valid-v-slot': 'off'
   }
 }

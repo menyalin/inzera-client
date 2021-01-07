@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import api from '@/api'
+import moment from 'moment'
 
+import api from '@/api'
 import catalog from './catalogModule'
+import prices from './priceModule'
+
 const initPlugin = store => {
   store.dispatch('initStore')
 }
@@ -13,7 +16,8 @@ export default new Vuex.Store({
   state: {
     loading: false,
     appLoading: false,
-    error: null
+    error: null,
+    currentDate: moment().format('YYYY-MM-DD')
   },
   mutations: {
     setLoading(state, payload) {
@@ -24,6 +28,9 @@ export default new Vuex.Store({
     },
     clearError(state) {
       state.error = null
+    },
+    setCurrentDate(state, payload) {
+      state.currentDate = payload
     }
   },
   actions: {
@@ -44,10 +51,12 @@ export default new Vuex.Store({
     baseUrl: () => 'http://localhost:3000/api/',
     error: ({ error }) => error,
     appLoading: ({ appLoading }) => appLoading,
-    loading: ({ loading }) => loading
+    loading: ({ loading }) => loading,
+    currentDate: ({ currentDate }) => currentDate
   },
   modules: {
-    catalog
+    catalog,
+    prices
   },
   plugins: [initPlugin]
 })

@@ -1,23 +1,15 @@
 <template>
   <v-container>
-    <v-row v-if="!loading">
+    <v-row>
       <v-col cols="8" offset-md="3" md="5">
         <list-header
           :parent="$route.params.group"
           :itemDisabled="!containSku($route.params.group)"
           :groupDisabled="!containSubgroups($route.params.group)"
+          @change-search-input="changeSearchInput"
         />
-        <catalog-navigation v-if="$route.params.group" :groupId="$route.params.group" />
+        <catalog-navigation :groupId="$route.params.group" />
         <v-list subheader>
-          <!-- <v-list-item v-if="parent.length >= 2" @click="back" dense>
-            <v-list-item-content>
-              <v-list-item-title>
-                <v-icon>mdi-arrow-top-left-bold-outline</v-icon>
-                Назад
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider v-if="parent.length >= 2" /> -->
           <div v-for="item of catalogList" :key="item._id">
             <list-item-group
               :item="item"
@@ -25,14 +17,10 @@
               @click="click(item)"
               v-if="item.type === 'group'"
             />
+
             <list-item-sku v-else :item="item" :baseUrl="baseUrl" />
           </div>
         </v-list>
-      </v-col>
-    </v-row>
-    <v-row v-else>
-      <v-col>
-        <spinner />
       </v-col>
     </v-row>
   </v-container>
@@ -40,7 +28,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import spinner from '@/components/spinner'
 import catalogNavigation from './catalogNavigation'
 import listHeader from './listHeader'
 import listItemGroup from './listItemGroup'
@@ -48,7 +35,8 @@ import listItemSku from './listItemSku'
 
 export default {
   data: () => ({
-    catalog: []
+    catalog: [],
+    search: null
   }),
   methods: {
     ...mapActions(['getCatalog']),
@@ -56,10 +44,20 @@ export default {
       if (item.type === 'group' && this.$route.params.group !== item._id) {
         this.$router.push('/catalog/' + item._id)
       }
+    },
+    getCatalogItem(group = 'root', str = '') {
+      let options = {
+        date: this.currentDate
+      }
+      if (str.trim().length) options.search = str
+      else options.parent = group
+      this.getCatalog(options)
+    },
+    changeSearchInput(str) {
+      this.getCatalogItem(this.$route.params.group, str)
     }
   },
   components: {
-    spinner,
     listHeader,
     listItemGroup,
     listItemSku,
@@ -72,19 +70,20 @@ export default {
   watch: {
     $route: {
       handler: function(to, from) {
-        let options = {}
-        if (to.params.group) {
-          options.parent = to.params.group
-        } else {
-          options.parent = 'root'
-        }
-        this.getCatalog(options)
+        this.getCatalogItem(to.params.group)
       },
       immediate: true
     }
   },
   computed: {
-    ...mapGetters(['baseUrl', 'catalogList', 'loading', 'containSku', 'containSubgroups'])
+    ...mapGetters([
+      'baseUrl',
+      'catalogList',
+      'loading',
+      'containSku',
+      'containSubgroups',
+      'currentDate'
+    ])
   }
 }
 </script>
