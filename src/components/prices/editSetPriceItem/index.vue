@@ -31,12 +31,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getCatalogItemsForAutocomplete']),
+    ...mapActions(['getCatalogItemsForAutocomplete', 'createSetPrice']),
     cancel() {
       this.$router.go(-1)
     },
     submit(newSetPrice) {
-      console.log('Form submit, new setPrice:', newSetPrice)
+      this.createSetPrice(newSetPrice).then(() => {
+        this.$router.push('/prices')
+      })
     }
   }
 }

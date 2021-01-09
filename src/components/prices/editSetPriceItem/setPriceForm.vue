@@ -1,18 +1,17 @@
 <template>
-  <form>
-    prices: {{ prices }} selected: {{ selected }}
+  <form @submit.prevent="submitForm">
     <v-card>
       <v-card-title>{{ formTitle }}</v-card-title>
       <v-card-text>
         <div class="settings">
           <div class="setting-child">
-            <date-input label="Дата начала" v-model="startDate" />
+            <date-input label="Дата начала*" v-model="startDate" />
           </div>
           <div class="setting-child">
             <date-input label="Дата окончания" v-model="endDate" />
           </div>
           <div class="setting-child description">
-            <v-text-field label="Описание" v-model="description" />
+            <v-text-field label="Описание*" v-model="description" />
           </div>
         </div>
         <div class="prices">
@@ -23,7 +22,8 @@
             v-model="selected"
             show-select
             item-key="catalogItemId"
-            :limit="-1"
+            hide-default-footer
+            :items-per-page="-1"
           >
             <template v-slot:top>
               <v-btn small color="primary" @click="addRow" class="mx-2">Добавить строку</v-btn>
@@ -40,7 +40,7 @@
             <!-- eslint-disable-next-line -->
             <template v-slot:item.catalogItemId="{ item }">
               <v-autocomplete
-                :items="filteredPrices(item.catalogItemId)"
+                :items="allCatalogItems"
                 hide-details
                 single-line
                 label="Выберите товар"
@@ -89,11 +89,11 @@
 @cancel
 @form-submit
 
-Форма - 
+Форма -
     startDate
     endDate
     description
-    prices: 
+    prices:
         skuId
         price
         oldPrice
@@ -132,7 +132,21 @@ export default {
   computed: {
     ...mapGetters(['allCatalogItems']),
     formValid() {
-      return true
+      // проверяем заполненость даты начала цены
+      const startDate = !!this.startDate
+      const desc = !!this.description
+      // проверка массива this.prices
+      const tmpArrayOfIds = this.prices
+        .map(price => {
+          if (!!price.price && !!price.catalogItemId) return price.catalogItemId
+        })
+        .filter(item => !!item)
+
+      const isValidPrices =
+        tmpArrayOfIds.length === this.prices.length &&
+        tmpArrayOfIds.length === new Set(tmpArrayOfIds).size
+
+      return startDate && desc && isValidPrices
     },
     loading() {
       return false
@@ -147,15 +161,16 @@ export default {
         price => !this.selected.map(item => item.catalogItemId).includes(price.catalogItemId)
       )
     },
-    filteredPrices(currentPriceId = '') {
-      const catalogIdsInPrices = this.prices.map(price => price.catalogItemId || '')
-      console.log('currentPriceId:', currentPriceId)
-      let res = this.allCatalogItems.filter(
-        item =>
-          !catalogIdsInPrices.includes(item.catalogItemId) ||
-          (!currentPriceId && item.catalogItemId == currentPriceId)
-      )
-      return res
+    submitForm() {
+      if (this.formValid) {
+        const setPrice = {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          description: this.description,
+          prices: this.prices
+        }
+        this.$emit('form-submit', setPrice)
+      }
     }
   }
 }
