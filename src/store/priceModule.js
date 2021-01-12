@@ -16,7 +16,6 @@ export default {
       state.setPrices = payload
     },
     addSetPrice(state, payload) {
-      console.log('new setPrice', payload)
       state.setPrices.push(payload)
     },
     deleteSetPrice(state, id) {
@@ -39,23 +38,38 @@ export default {
           commit('setError', e.message)
         })
     },
+    getSetPriceById(_, setPriceId) {
+      return new Promise((resolve, reject) => {
+        api
+          .get(`/price/setPrices/${setPriceId}`)
+          .then(({ data }) => {
+            data.startDateFormatted = formatDate(data.startDate)
+            data.endDateFormatted = formatDate(data.endDate)
+            data.createdAtFormatted = formatDate(data.createdAt, 'YYYY-MM-DD HH:mm:ss')
+            resolve(data)
+          })
+          .catch(e => reject(e.message))
+      })
+    },
     deleteSetPrice({ commit }, setPriceId) {
       api
         .delete(`/price/setPrices/${setPriceId}`)
         .then(() => commit('deleteSetPrice', setPriceId))
         .catch(e => commit('setError', e.message))
     },
-    createSetPrice({commit}, newSetPrice) {
+    createSetPrice({ commit }, newSetPrice) {
       return new Promise((resolve, reject) => {
         api
-        .post('/price/setPrices', newSetPrice)
-        .then(({data}) => {
-          commit('addSetPrice', data)
-          resolve(data)
-        })
-        .catch(e => commit('setError', e.message))
+          .post('/price/setPrices', newSetPrice)
+          .then(({ data }) => {
+            commit('addSetPrice', data)
+            resolve(data)
+          })
+          .catch(e => {
+            commit('setError', e.message)
+            reject(e)
+          })
       })
-      
     }
   },
   getters: {

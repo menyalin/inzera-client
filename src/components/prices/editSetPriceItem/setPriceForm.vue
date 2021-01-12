@@ -3,15 +3,29 @@
     <v-card>
       <v-card-title>{{ formTitle }}</v-card-title>
       <v-card-text>
+        <v-alert v-if="id" type="info" text>
+          Редактирование пока не работает, можно только посмотреть :)
+        </v-alert>
         <div class="settings">
           <div class="setting-child">
-            <date-input label="Дата начала*" v-model="startDate" />
+            <date-input label="Дата начала*" v-model="startDate" hide-details />
           </div>
           <div class="setting-child">
             <date-input label="Дата окончания" v-model="endDate" />
           </div>
           <div class="setting-child description">
             <v-text-field label="Описание*" v-model="description" />
+          </div>
+        </div>
+        <div class="settings">
+          <div class="setting-child">
+            <v-switch v-model="isPromo" label="Акция" class="mb-2 mr-4" hide-details />
+          </div>
+          <div class="setting-child" v-if="isPromo">
+            <v-text-field label="Размер скидки" v-model="discount" class="mb-2" hide-details />
+          </div>
+          <div class="setting-child description" v-if="isPromo">
+            <v-text-field label="Описание акции" v-model="promoDescription" />
           </div>
         </div>
         <div class="prices">
@@ -21,7 +35,7 @@
             dense
             v-model="selected"
             show-select
-            item-key="catalogItemId"
+            item-key="sku"
             hide-default-footer
             :items-per-page="-1"
           >
@@ -38,7 +52,7 @@
               </v-btn>
             </template>
             <!-- eslint-disable-next-line -->
-            <template v-slot:item.catalogItemId="{ item }">
+            <template v-slot:item.sku="{ item }">
               <v-autocomplete
                 :items="allCatalogItems"
                 hide-details
@@ -46,7 +60,7 @@
                 label="Выберите товар"
                 flat
                 color="primary"
-                v-model="item.catalogItemId"
+                v-model="item.sku"
                 class="my-0 py-0"
               />
             </template>
@@ -105,26 +119,42 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'setPriceForm',
   data: () => ({
+    id: null,
     startDate: null,
     endDate: null,
     description: null,
     selected: [],
-    prices: [
-      {
-        catalogItemId: '5fdf30d5ba264c2970039d37',
-        price: 260,
-        oldPrice: 300
-      }
-    ],
+    prices: [],
+    isPromo: false,
+    discount: 0,
+    promoDescription: '',
     headers: [
-      { value: 'catalogItemId', text: 'Товар' },
+      { value: 'sku', text: 'Товар' },
       { value: 'price', text: 'Новая цена', width: '150px', sortable: false },
       { value: 'oldPrice', text: 'Старая цена', width: '150px', sortable: false }
     ]
   }),
   props: {
     type: String,
-    formTitle: String
+    formTitle: String,
+    setPrice: Object
+  },
+  watch: {
+    setPrice: {
+      handler: function(val) {
+        if (val && val._id) {
+          this.id = val._id
+          this.startDate = val.startDateFormatted
+          this.endDate = val.endDateFormatted
+          this.description = val.description
+          this.prices = val.prices
+          this.isPromo = val.isPromo
+          this.discount = val.discount
+          this.promoDescription = val.promoDescription
+        }
+      },
+      immediate: true
+    }
   },
   components: {
     dateInput
@@ -138,7 +168,7 @@ export default {
       // проверка массива this.prices
       const tmpArrayOfIds = this.prices
         .map(price => {
-          if (!!price.price && !!price.catalogItemId) return price.catalogItemId
+          if (!!price.price && !!price.sku) return price.sku
         })
         .filter(item => !!item)
 
@@ -146,7 +176,7 @@ export default {
         tmpArrayOfIds.length === this.prices.length &&
         tmpArrayOfIds.length === new Set(tmpArrayOfIds).size
 
-      return startDate && desc && isValidPrices
+      return startDate && desc && isValidPrices && !this.id
     },
     loading() {
       return false
@@ -158,7 +188,7 @@ export default {
     },
     deleteSelectedRow() {
       this.prices = this.prices.filter(
-        price => !this.selected.map(item => item.catalogItemId).includes(price.catalogItemId)
+        price => !this.selected.map(item => item.sku).includes(price.sku)
       )
     },
     submitForm() {
@@ -167,7 +197,10 @@ export default {
           startDate: this.startDate,
           endDate: this.endDate,
           description: this.description,
-          prices: this.prices
+          prices: this.prices,
+          isPromo: this.isPromo,
+          discount: this.discount,
+          promoDescription: this.promoDescription
         }
         this.$emit('form-submit', setPrice)
       }
@@ -177,6 +210,9 @@ export default {
 </script>
 
 <style>
+.prices {
+  padding: 20px 30px;
+}
 .settings {
   display: flex;
   flex-direction: row;
@@ -184,7 +220,7 @@ export default {
   width: 100%;
 }
 .setting-child {
-  padding: 10px;
+  padding: 0px 10px;
   flex-basis: 300px;
 }
 .description {

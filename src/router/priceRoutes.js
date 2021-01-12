@@ -14,5 +14,11 @@ export default [
     props: {
       type: 'new'
     }
+  },
+  {
+    path: '/prices/:id',
+    name: 'editSetPrice',
+    component: editSetPriceItem,
+    props: true
   }
 ]

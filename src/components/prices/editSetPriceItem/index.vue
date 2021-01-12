@@ -2,25 +2,41 @@
   <v-container>
     <v-row>
       <v-col>
-        <set-price-form @cancel="cancel" @form-submit="submit" :formTitle="formTitle" />
+        <set-price-form
+          @cancel="cancel"
+          @form-submit="submit"
+          :formTitle="formTitle"
+          :setPrice="setPrice"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import setPriceForm from './setPriceForm.vue'
+
 export default {
   name: 'editSetPriceItem',
+  data: () => ({
+    setPrice: {}
+  }),
   props: {
+    id: String,
     type: {
       type: String,
+      default: 'edit',
       validator: value => ['new', 'edit'].includes(value)
     }
   },
-  created() {
+  async created() {
     this.getCatalogItemsForAutocomplete()
+    if (this.id) {
+      const setPrice = await this.getSetPriceById(this.id)
+      setPrice.prices = setPrice.prices.map(item => ({ ...item, sku: item.sku._id }))
+      this.setPrice = setPrice
+    }
   },
   components: {
     setPriceForm
@@ -31,7 +47,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getCatalogItemsForAutocomplete', 'createSetPrice']),
+    ...mapActions(['getCatalogItemsForAutocomplete', 'createSetPrice', 'getSetPriceById']),
     cancel() {
       this.$router.go(-1)
     },
