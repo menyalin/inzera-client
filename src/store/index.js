@@ -5,6 +5,7 @@ import moment from 'moment'
 import api from '@/api'
 import catalog from './catalogModule'
 import prices from './priceModule'
+import brands from './brandModule'
 
 const initPlugin = store => {
   store.dispatch('initStore')
@@ -56,7 +57,8 @@ export default new Vuex.Store({
   },
   modules: {
     catalog,
-    prices
+    prices,
+    brands
   },
   plugins: [initPlugin]
 })

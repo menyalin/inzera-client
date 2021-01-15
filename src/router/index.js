@@ -1,9 +1,9 @@
-
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import catalogRoutes from './catalogRoutes'
 import priceRoutes from './priceRoutes'
+import brandRoutes from './brandRoutes'
 
 import homePage from '@/components/homePage'
 import allImages from '@/components/allImages/index.vue'
@@ -13,6 +13,7 @@ Vue.use(VueRouter)
 const routes = [
   ...catalogRoutes,
   ...priceRoutes,
+  ...brandRoutes,
   {
     path: '/',
     name: 'homePage',
