@@ -5,7 +5,7 @@
         <v-data-table
           :headers="headers"
           :items-per-page="-1"
-          :items="allBrands"
+          :items="allDetails"
           hide-default-footer
           :loading="loading"
           dense
@@ -13,7 +13,7 @@
           @click:row="rowClick"
         >
           <template v-slot:top>
-            <list-header @add="addBrand" @refresh="refresh" />
+            <list-header @add="addDetail" @refresh="refresh" />
           </template>
         </v-data-table>
       </v-col>
@@ -26,7 +26,7 @@ import { mapActions, mapGetters } from 'vuex'
 import listHeader from '@/components/listHeader'
 
 export default {
-  name: 'brandList',
+  name: 'detailList',
   components: {
     listHeader
   },
@@ -38,27 +38,27 @@ export default {
     ]
   }),
   created() {
-    if (this.allBrands.length === 0) {
+    if (this.allDetails.length === 0) {
       this.loading = true
-      this.getAllBrands()
+      this.getAllDetails()
         .then()
         .finally(() => (this.loading = false))
     }
   },
   computed: {
-    ...mapGetters(['allBrands'])
+    ...mapGetters(['allDetails'])
   },
   methods: {
-    ...mapActions(['getAllBrands']),
-    addBrand() {
-      this.$router.push('/brands/new')
+    ...mapActions(['getAllDetails']),
+    addDetail() {
+      this.$router.push('/details/new')
     },
     rowClick(item) {
-      this.$router.push(`/brands/${item._id}`)
+      this.$router.push(`/details/${item._id}`)
     },
     refresh() {
       this.loading = true
-      this.getAllBrands()
+      this.getAllDetails()
         .then()
         .finally(() => (this.loading = false))
     }

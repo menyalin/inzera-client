@@ -1,34 +1,35 @@
 import api from '@/api'
-const basePath = '/brands'
+const basePath = '/details'
 
 export default {
   state: {
-    allBrands: []
+    allDetails: [],
+    detailTypes: [{ value: 'brand', text: 'Бренд' }]
   },
   mutations: {
-    setBrands(state, payload) {
+    setDetails(state, payload) {
       state.allBrands = payload
     },
-    addBrand(state, newBrand) {
-      state.allBrands.push(newBrand)
+    addDetail(state, newDetail) {
+      state.allDetails.push(newDetail)
     },
-    deleteBrand(state, id) {
-      state.allBrands = state.allBrands.filter(item => item._id !== id)
+    deleteDetail(state, id) {
+      state.allDetails = state.allDetails.filter(item => item._id !== id)
     }
   },
   actions: {
-    getAllBrands({ commit }) {
+    getAllDetails({ commit }) {
       return new Promise((resolve, reject) => {
         api
           .get(basePath)
           .then(({ data }) => {
-            commit('setBrands', data)
+            commit('setDetails', data)
             resolve(data)
           })
           .catch(e => reject(e))
       })
     },
-    getBrandById(_, id) {
+    getDetailById(_, id) {
       return new Promise((resolve, reject) => {
         api
           .get(basePath + '/' + id)
@@ -38,31 +39,31 @@ export default {
           .catch(e => reject(e))
       })
     },
-    createBrand({ commit }, newBrand) {
+    createDetail({ commit }, newDetail) {
       return new Promise((resolve, reject) => {
         api
-          .post(basePath, newBrand)
+          .post(basePath, newDetail)
           .then(({ data }) => {
-            commit('addBrand', data)
+            commit('addDetail', data)
             resolve(data)
           })
           .catch(e => reject(e))
       })
     },
-    updateBrand(_, { _id, name, description }) {
+    updateDetail(_, { _id, name, description, type }) {
       return new Promise((resolve, reject) => {
         api
-          .put(basePath + '/' + _id, { name, description })
+          .put(basePath + '/' + _id, { name, description, type })
           .then(({ data }) => resolve(data))
           .catch(e => reject(e))
       })
     },
-    deleteBrand({ commit }, _id) {
+    deleteDetail({ commit }, _id) {
       return new Promise((resolve, reject) => {
         api
           .delete(basePath + '/' + _id)
           .then(({ data }) => {
-            commit('deleteBrand', _id)
+            commit('deleteDetail', _id)
             resolve(data)
           })
           .catch(e => reject(e))
@@ -70,6 +71,6 @@ export default {
     }
   },
   getters: {
-    allBrands: state => state.allBrands
+    allDetails: state => state.allDetails
   }
 }

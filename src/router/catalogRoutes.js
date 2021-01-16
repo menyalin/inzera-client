@@ -1,5 +1,6 @@
 import catalog from '@/components/catalog/index'
 import editCatalogItem from '@/components/catalog/editCatalogItem'
+import catalogItemView from '@/components/catalog/catalogItemView'
 
 export default [
   {
@@ -12,9 +13,9 @@ export default [
   },
   {
     path: '/catalog/:group/:sku',
-    component: catalog,
-    name: 'catalogItem'
-    // props: true
+    component: catalogItemView,
+    name: 'catalogItem',
+    props: true
   },
   {
     path: '/catalog/:group',

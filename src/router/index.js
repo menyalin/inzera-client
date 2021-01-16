@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 import catalogRoutes from './catalogRoutes'
 import priceRoutes from './priceRoutes'
-import brandRoutes from './brandRoutes'
+import detailRoutes from './detailRoutes'
 
 import homePage from '@/components/homePage'
 import allImages from '@/components/allImages/index.vue'
@@ -13,7 +13,7 @@ Vue.use(VueRouter)
 const routes = [
   ...catalogRoutes,
   ...priceRoutes,
-  ...brandRoutes,
+  ...detailRoutes,
   {
     path: '/',
     name: 'homePage',

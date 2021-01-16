@@ -2,12 +2,12 @@
   <v-container>
     <v-row>
       <v-col>
-        <brand-form
+        <detail-form
           :formTitle="formTitle"
           @form-submit="submit"
           @deletebtn="deleteItem"
           :loading="loading"
-          :brand="brand"
+          :detail="detail"
         />
       </v-col>
     </v-row>
@@ -16,60 +16,60 @@
 
 <script>
 import { mapActions } from 'vuex'
-import brandForm from './brandForm'
+import detailForm from './detailForm'
 export default {
-  name: 'editBrand',
+  name: 'editDetail',
   props: ['id'],
   data: () => ({
     loading: false,
-    brand: {}
+    detail: {}
   }),
   components: {
-    brandForm
+    detailForm
   },
   created() {
-    if (!this.isNewBrand) {
-      this.getBrand()
+    if (!this.isNewDetail) {
+      this.getDetail()
     }
   },
   computed: {
-    isNewBrand() {
+    isNewDetail() {
       return !this.id
     },
     formTitle() {
-      return this.isNewBrand ? 'Новый бренд' : 'Редактировать бренд'
+      return this.isNewDetail ? 'Новая запись' : 'Редактировать запись'
     }
   },
   methods: {
-    ...mapActions(['createBrand', 'getBrandById', 'updateBrand', 'deleteBrand']),
-    getBrand() {
+    ...mapActions(['createDetail', 'getDetailById', 'updateDetail', 'deleteDetail']),
+    getDetail() {
       this.loading = true
-      this.getBrandById(this.id)
-        .then(brand => (this.brand = brand))
+      this.getDetailById(this.id)
+        .then(detail => (this.detail = detail))
         .catch(e => this.$store.commit('setError', e.message))
         .finally(() => (this.loading = false))
     },
     submit(val) {
       this.loading = true
-      if (this.isNewBrand) {
-        this.createBrand(val)
-          .then(() => this.$router.push('/brands'))
+      if (this.isNewDetail) {
+        this.createDetail(val)
+          .then(() => this.$router.push('/details'))
           .catch(e => this.$store.commit('setError', e.message))
           .finally(() => (this.loading = false))
       } else {
         // отправка формы если бренд редактируется
-        this.updateBrand(val)
-          .then(() => this.$router.push('/brands'))
+        this.updateDetail(val)
+          .then(() => this.$router.push('/details'))
           .catch(e => this.$store.commit('setError', e.message))
           .finally(() => (this.loading = false))
       }
     },
     deleteItem() {
-      if (!this.isNewBrand) {
+      if (!this.isNewDetail) {
         this.loading = true
-        this.deleteBrand(this.id).finally(() => {
+        this.deleteDetail(this.id).finally(() => {
           this.loading = false
-          this.$router.push('/brands')
+          this.$router.push('/details')
         })
       }
     }

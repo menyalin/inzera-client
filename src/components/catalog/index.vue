@@ -18,7 +18,7 @@
               v-if="item.type === 'group'"
             />
 
-            <list-item-sku v-else :item="item" :baseUrl="baseUrl" />
+            <list-item-sku v-else :item="item" :baseUrl="baseUrl" @click="click(item)" />
           </div>
         </v-list>
       </v-col>
@@ -43,6 +43,8 @@ export default {
     click(item) {
       if (item.type === 'group' && this.$route.params.group !== item._id) {
         this.$router.push('/catalog/' + item._id)
+      } else if (item.type === 'item') {
+        this.$router.push(this.$route.path + '/' + item._id)
       }
     },
     getCatalogItem(group = 'root', str = '') {

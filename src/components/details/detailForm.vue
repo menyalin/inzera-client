@@ -3,8 +3,9 @@
     <v-card :loading="loading">
       <v-card-title>{{ formTitle }} </v-card-title>
       <v-card-text>
+        <v-select v-model="type" label="Тип" />
         <v-text-field label="Название" v-model="name" />
-        <v-textarea outlined label="Описание" v-model="description" rows="8" />
+        <v-textarea outlined label="Описание" v-model="description" rows="10" />
       </v-card-text>
       <card-buttons
         :submitDisabled="!formValid"
@@ -19,13 +20,14 @@
 <script>
 import cardButtons from '@/components/common/cardButtons'
 export default {
-  name: 'brandForm',
+  name: 'detailForm',
   components: {
     cardButtons
   },
   data: () => ({
     id: null,
     name: null,
+    type: 'brand',
     description: null
   }),
   props: {
@@ -34,7 +36,7 @@ export default {
       default: false
     },
     formTitle: String,
-    brand: Object
+    detail: Object
   },
   computed: {
     formValid() {
@@ -42,10 +44,11 @@ export default {
     }
   },
   watch: {
-    brand: {
+    detail: {
       handler: function(val) {
         if (!!val && val._id) {
           this.id = val._id
+          this.type = val.type
           this.name = val.name
           this.description = val.description
         }
@@ -63,12 +66,13 @@ export default {
 
     submitForm() {
       if (this.formValid) {
-        let newBrand = {
+        let newDetail = {
+          type: this.type,
           name: this.name,
           description: this.description
         }
-        if (this.id) newBrand._id = this.id
-        this.$emit('form-submit', newBrand)
+        if (this.id) newDetail._id = this.id
+        this.$emit('form-submit', newDetail)
       }
     }
   }

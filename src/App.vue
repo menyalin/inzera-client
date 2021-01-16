@@ -3,20 +3,8 @@
     <v-app-bar app color="primary" dense dark>
       <v-spacer />
       <v-btn text to="/prices">Цены</v-btn>
+      <v-btn text to="/details">Доп.Инофрмация</v-btn>
       <v-btn text to="/catalog">Каталог</v-btn>
-      <v-menu left bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" text>
-            Справочники
-          </v-btn>
-        </template>
-
-        <v-list>
-          <v-list-item to="/brands">
-            <v-list-item-title>Бренды</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
       <v-btn text to="/images">images</v-btn>
     </v-app-bar>
 

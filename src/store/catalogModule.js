@@ -1,4 +1,5 @@
 import api from '@/api'
+const basePath = '/catalog'
 
 export default {
   state: {
@@ -62,6 +63,15 @@ export default {
         api
           .post('/catalog', payload)
           .then(response => resolve(response.data))
+          .catch(e => reject(e))
+      })
+    },
+    getCatalogItemById({ getters }, id) {
+      return new Promise((resolve, reject) => {
+        //
+        api
+          .get(basePath + '/' + id, { params: { date: getters.currentDate } })
+          .then(({ data }) => resolve(data))
           .catch(e => reject(e))
       })
     }
