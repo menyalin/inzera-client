@@ -4,11 +4,17 @@ const basePath = '/details'
 export default {
   state: {
     allDetails: [],
-    detailTypes: [{ value: 'brand', text: 'Бренд' }]
+    detailTypes: [
+      { value: 'brand', text: 'Бренд' },
+      { value: 'company', text: 'Производитель' },
+      { value: 'recomendation', text: 'Рекомендуемое использование' },
+      { value: 'sommelier', text: 'Электронный сомелье' },
+      { value: 'degustation', text: 'Дегустация' }
+    ]
   },
   mutations: {
     setDetails(state, payload) {
-      state.allBrands = payload
+      state.allDetails = payload
     },
     addDetail(state, newDetail) {
       state.allDetails.push(newDetail)
@@ -71,6 +77,7 @@ export default {
     }
   },
   getters: {
-    allDetails: state => state.allDetails
+    allDetails: state => state.allDetails.map(item => ({ ...item, typeText: state.detailTypes.find(type => type.value === item.type).text})),
+    detailTypes: state => state.detailTypes
   }
 }

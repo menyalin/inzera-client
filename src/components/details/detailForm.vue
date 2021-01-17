@@ -3,7 +3,7 @@
     <v-card :loading="loading">
       <v-card-title>{{ formTitle }} </v-card-title>
       <v-card-text>
-        <v-select v-model="type" label="Тип" />
+        <v-select v-model="type" label="Тип" :items="detailTypes" />
         <v-text-field label="Название" v-model="name" />
         <v-textarea outlined label="Описание" v-model="description" rows="10" />
       </v-card-text>
@@ -19,6 +19,7 @@
 
 <script>
 import cardButtons from '@/components/common/cardButtons'
+import { mapGetters } from 'vuex'
 export default {
   name: 'detailForm',
   components: {
@@ -39,6 +40,7 @@ export default {
     detail: Object
   },
   computed: {
+    ...mapGetters(['detailTypes']),
     formValid() {
       return !!this.name && !!this.description
     }

@@ -3,7 +3,7 @@
     <v-app-bar app color="primary" dense dark>
       <v-spacer />
       <v-btn text to="/prices">Цены</v-btn>
-      <v-btn text to="/details">Доп.Инофрмация</v-btn>
+      <v-btn text to="/details">Доп.Информация</v-btn>
       <v-btn text to="/catalog">Каталог</v-btn>
       <v-btn text to="/images">images</v-btn>
     </v-app-bar>

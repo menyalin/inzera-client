@@ -34,6 +34,7 @@ export default {
     loading: false,
     headers: [
       { value: 'createdAt', text: 'Создан' },
+      { value: 'typeText', text: 'Тип' },
       { value: 'name', text: 'Рабочее название' }
     ]
   }),
@@ -58,9 +59,7 @@ export default {
     },
     refresh() {
       this.loading = true
-      this.getAllDetails()
-        .then()
-        .finally(() => (this.loading = false))
+      this.getAllDetails().finally((this.loading = false))
     }
   }
 }
