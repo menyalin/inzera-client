@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import listHeader from '@/components/listHeader'
+import listHeader from '@/components/common/listHeader'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {

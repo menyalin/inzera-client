@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import dateInput from '@/components/dateInput/dateInput'
+import dateInput from '@/components/common/dateInput/dateInput'
 import { mapGetters, mapMutations } from 'vuex'
 
 export default {

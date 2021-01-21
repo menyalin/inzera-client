@@ -5,7 +5,7 @@
       <v-card-text>
         <v-select v-model="type" label="Тип" :items="detailTypes" />
         <v-text-field label="Название" v-model="name" />
-        <v-textarea outlined label="Описание" v-model="description" rows="10" />
+        <v-textarea outlined label="Описание" v-model="description" rows="15" />
       </v-card-text>
       <card-buttons
         :submitDisabled="!formValid"

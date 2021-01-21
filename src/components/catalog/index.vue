@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="8" offset-md="3" md="5">
+      <v-col lg="8" offset-lg="2" xl="6" offset-xl="3">
         <list-header
           :parent="$route.params.group"
           :itemDisabled="!containSku($route.params.group)"
@@ -17,7 +17,6 @@
               @click="click(item)"
               v-if="item.type === 'group'"
             />
-
             <list-item-sku v-else :item="item" :baseUrl="baseUrl" @click="click(item)" />
           </div>
         </v-list>
@@ -27,7 +26,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import catalogNavigation from './catalogNavigation'
 import listHeader from './listHeader'
 import listItemGroup from './listItemGroup'
@@ -40,6 +39,7 @@ export default {
   }),
   methods: {
     ...mapActions(['getCatalog']),
+    ...mapMutations(['clearCatalog']),
     click(item) {
       if (item.type === 'group' && this.$route.params.group !== item._id) {
         this.$router.push('/catalog/' + item._id)
@@ -72,6 +72,7 @@ export default {
   watch: {
     $route: {
       handler: function(to, from) {
+        this.clearCatalog()
         this.getCatalogItem(to.params.group)
       },
       immediate: true

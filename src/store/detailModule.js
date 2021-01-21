@@ -7,9 +7,8 @@ export default {
     detailTypes: [
       { value: 'brand', text: 'Бренд' },
       { value: 'company', text: 'Производитель' },
-      { value: 'recomendation', text: 'Рекомендуемое использование' },
-      { value: 'sommelier', text: 'Электронный сомелье' },
-      { value: 'degustation', text: 'Дегустация' }
+      { value: 'recomendation', text: 'Рекомендуемое употребление' },
+      { value: 'sommelier', text: 'Электронный сомелье' }
     ]
   },
   mutations: {
@@ -77,7 +76,15 @@ export default {
     }
   },
   getters: {
-    allDetails: state => state.allDetails.map(item => ({ ...item, typeText: state.detailTypes.find(type => type.value === item.type).text})),
-    detailTypes: state => state.detailTypes
+    allDetails: state =>
+      state.allDetails.map(item => ({
+        ...item,
+        typeText: state.detailTypes.find(type => type.value === item.type).text
+      })),
+    detailTypes: state => state.detailTypes,
+    allBrands: ({ allDetails }) => allDetails.filter(item => item.type === 'brand'),
+    allCompanies: ({ allDetails }) => allDetails.filter(item => item.type === 'company'),
+    allRecomendations: ({ allDetails }) => allDetails.filter(item => item.type === 'recomendation'),
+    allSommelier: ({ allDetails }) => allDetails.filter(item => item.type === 'sommelier')
   }
 }

@@ -5,51 +5,124 @@
         {{ title }}
         <v-spacer />
         <v-img
-          v-if="mainImageUrl"
-          :src="baseUrl + mainImageUrl"
+          v-if="catalogItem.mainImageUrl"
+          :src="baseUrl + catalogItem.mainImageUrl"
           aspect-ratio="1"
           max-height="60"
           max-width="60"
         />
       </v-card-title>
       <v-card-text>
+        <v-text-field label="Название" v-model="catalogItem.name" />
         <v-text-field
-          label="Название"
-          hint="Название элемента для отображения в списке"
-          v-model="name"
+          label="Короткое название для блока с аналогами"
+          v-model="catalogItem.nameForSeries"
         />
-        <v-text-field v-if="!isGroup" label="Артикул" v-model="sku" />
-        <v-text-field label="Рейтинг" hint="Очередность вывода" v-model="rank" />
-        <v-select label="Родитель" multiple :items="parentItems" v-model="parent" clearable chips />
+        <v-select
+          v-if="type === 'item'"
+          label="Бренд"
+          v-model="catalogItem.brand"
+          :items="allBrands"
+          item-text="name"
+          item-value="_id"
+        />
+        <v-select
+          v-if="type === 'item'"
+          label="Тип"
+          v-model="catalogItem.skuType"
+          :items="skuTypes"
+        />
+        <v-select
+          v-if="type === 'item'"
+          label="Серия"
+          v-model="catalogItem.series"
+          :items="allSeries"
+          item-value="_id"
+          item-text="name"
+        />
+        <v-select
+          v-if="type === 'item'"
+          label="Производитель"
+          v-model="catalogItem.company"
+          :items="allCompanies"
+          item-text="name"
+          item-value="_id"
+        />
+        <v-select
+          v-if="type === 'item'"
+          label="Рекомендации употребления"
+          v-model="catalogItem.recomendation"
+          :items="allRecomendations"
+          item-text="name"
+          item-value="_id"
+        />
+        <v-select
+          v-if="type === 'item'"
+          label="Электронный сомелье"
+          v-model="catalogItem.sommelier"
+          :items="allSommelier"
+          item-text="name"
+          item-value="_id"
+        />
+        <v-select
+          v-if="type === 'item'"
+          label="Сегмент"
+          v-model="catalogItem.segment"
+          :items="allSegments"
+        />
+        <v-text-field v-if="type === 'item'" label="Артикул" v-model="catalogItem.sku" />
+        <v-select
+          v-if="type === 'item'"
+          label="Объем"
+          v-model="catalogItem.volume"
+          :items="volumeTypes"
+        />
+        <v-select v-if="type === 'item'" label="Крепость" v-model="catalogItem.abv" :items="abvs" />
+        <v-text-field label="Рейтинг" hint="Очередность вывода" v-model="catalogItem.rank" />
+        <v-select
+          label="Родитель"
+          multiple
+          :items="parentItems"
+          v-model="catalogItem.parent"
+          clearable
+          chips
+        />
         <v-textarea
           v-if="type === 'item'"
           outlined
-          label="Описание"
-          hint="Описание товара"
-          v-model="description"
+          hide-details
+          label="Описание товара"
+          v-model="catalogItem.description"
         />
+        <v-checkbox hide-details label="Показывать в каталоге" v-model="catalogItem.isActive" />
         <v-checkbox
           v-if="isGroup"
           hide-details
           label="Может содержать подгруппы"
-          v-model="containSubgroups"
+          v-model="catalogItem.containSubgroups"
         />
-        <v-checkbox v-if="isGroup" hide-details label="Может содержать SKU" v-model="containSku" />
+        <v-checkbox
+          v-if="isGroup"
+          hide-details
+          label="Может содержать SKU"
+          v-model="catalogItem.containSku"
+        />
       </v-card-text>
       <v-card-actions>
         <image-picker-dialog
           v-if="type === 'group'"
           buttonText="Иконка группы"
           folder="./static/svg"
-          :maxWidthDialog="800"
-          v-model="mainImageUrl"
+          :maxWidthDialog="1000"
+          v-model="catalogItem.mainImageUrl"
         />
         <image-picker-dialog
           v-else
           dialogTitle="Выбор фотографий"
           buttonText="Загрузить фото"
-          :maxWidthDialog="800"
-          v-model="images"
+          multiple
+          :maxWidthDialog="1300"
+          v-model="catalogItem.images"
           folder="./static/sku_images"
         />
         <v-spacer />
@@ -61,35 +134,64 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import imagePickerDialog from '../imagePickerDialog'
+import { mapActions, mapGetters } from 'vuex'
+import imagePickerDialog from '@/components/common/imagePickerDialog'
 export default {
   name: 'catalogForm',
-  data: () => ({
-    _id: null,
-    mainImageUrl: null,
-    parent: [],
-    images: null,
-    name: null,
-    rank: 50,
-    description: null,
-    sku: null,
-    containSubgroups: false,
-    containSku: false
-  }),
+  data() {
+    return {
+      catalogItem: {
+        _id: null,
+        mainImageUrl: null,
+        parent: [],
+        images: null,
+        nameForSeries: null,
+        name: null,
+        rank: 50,
+        sommelier: null,
+        segment: null,
+        volume: null,
+        series: null,
+        brand: null,
+        abv: null,
+        company: null,
+        recomendation: null,
+        description: null,
+        sku: null,
+        containSubgroups: false,
+        containSku: false,
+        isActive: true
+      }
+    }
+  },
   components: {
     imagePickerDialog
   },
   computed: {
-    ...mapGetters(['baseUrl']),
+    ...mapGetters([
+      'baseUrl',
+      'volumeTypes',
+      'allBrands',
+      'allDetails',
+      'allCompanies',
+      'allRecomendations',
+      'allSommelier',
+      'skuTypes',
+      'allSegments',
+      'abvs',
+      'allSeries'
+    ]),
     formValid() {
       return (
-        (this.type === 'group' && this.name) ||
-        (this.type === 'item' && this.name && this.parent.length >= 1)
+        (this.type === 'group' && this.catalogItem.name) ||
+        (this.type === 'item' && this.catalogItem.name && this.catalogItem.parent.length >= 1)
       )
     },
     isGroup() {
       return this.type === 'group'
+    },
+    isNewItem() {
+      return !!this.updatedItem._id
     }
   },
   props: {
@@ -117,27 +219,15 @@ export default {
     }
   },
   mounted() {
-    if (this.parentProp) {
-      this.parent.push(this.parentProp)
-    }
+    if (this.parentProp) this.catalogItem.parent.push(this.parentProp)
+    if (this.allDetails.length === 0) this.getAllDetails()
+    if (this.allSeries.length === 0) this.getAllSeries()
   },
   methods: {
+    ...mapActions(['getAllDetails', 'getAllSeries']),
     submit() {
       if (this.formValid) {
-        let catalogItem = {
-          name: this.name,
-          type: this.type,
-          rank: this.rank,
-          parent: this.parent,
-          mainImageUrl: this.mainImageUrl,
-          description: this.description,
-          sku: this.sku,
-          images: this.images,
-          containSubgroups: this.containSubgroups,
-          containSku: this.containSku
-        }
-        if (this._id) catalogItem._id = this._id
-        this.$emit('submit-form', catalogItem)
+        this.$emit('submit-form', this.catalogItem)
       }
     },
     cancel() {
@@ -148,16 +238,7 @@ export default {
     updatedItem: {
       handler: function(val) {
         if (val._id) {
-          this._id = val._id
-          this.name = val.name
-          this.parent = val.parent
-          this.rank = val.rank
-          this.mainImageUrl = val.mainImageUrl
-          this.description = val.description
-          this.sku = val.sku
-          this.images = val.images
-          this.containSubgroups = val.containSubgroups
-          this.containSku = val.containSku
+          this.catalogItem = Object.assign({}, val)
         }
       },
       immediate: true

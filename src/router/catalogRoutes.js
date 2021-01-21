@@ -1,15 +1,12 @@
 import catalog from '@/components/catalog/index'
 import editCatalogItem from '@/components/catalog/editCatalogItem'
-import catalogItemView from '@/components/catalog/catalogItemView'
+import catalogItemView from '@/components/catalog/catalogItemView/index.vue'
 
 export default [
   {
     path: '/catalog',
     name: 'catalogRoot',
     component: catalog
-    // props: {
-    //   group: 'root'
-    // }
   },
   {
     path: '/catalog/:group/:sku',

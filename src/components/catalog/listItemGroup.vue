@@ -2,7 +2,7 @@
   <v-list-item @click="$emit('click')">
     <v-list-item-avatar tile>
       <v-avatar size="30px" v-if="item.mainImageUrl">
-        <v-img :src="baseUrl + item.mainImageUrl" />
+        <v-img :transition="false" :src="baseUrl + item.mainImageUrl" />
       </v-avatar>
     </v-list-item-avatar>
     <v-list-item-content>

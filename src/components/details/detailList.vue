@@ -23,7 +23,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import listHeader from '@/components/listHeader'
+import listHeader from '@/components/common/listHeader'
 
 export default {
   name: 'detailList',

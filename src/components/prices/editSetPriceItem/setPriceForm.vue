@@ -113,7 +113,7 @@
         oldPrice
 
 */
-import dateInput from '@/components/dateInput/dateInput'
+import dateInput from '@/components/common/dateInput/dateInput'
 import { mapGetters } from 'vuex'
 
 export default {

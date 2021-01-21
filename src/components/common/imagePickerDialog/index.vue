@@ -8,19 +8,21 @@
         <v-card-title>
           {{ dialogTitle }}
           <v-spacer />
-          <v-text-field label="Поиск" v-model="search" class="px-3" />
+          <v-text-field label="Поиск по названию" v-model="search" class="px-3" />
         </v-card-title>
 
         <v-card-text>
+          {{ selected }}
           <div class="gallery-wrapper">
             <div
+              v-for="image of filteredImages"
               class="gallery-item ma-2"
-              :class="{ selected: image.url === selected }"
-              v-for="image of images"
+              :class="{ selected: isSelectedImage(image) }"
               :key="image.url"
               @click="select(image)"
             >
-              <v-img :src="baseUrl + image.url" max-width="90" height="90" />
+              <small>{{ image.name }}</small>
+              <v-img :src="baseUrl + image.url" max-width="200" height="200" contain />
             </div>
           </div>
         </v-card-text>
@@ -45,13 +47,17 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'imagePickerDialog',
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     multiple: {
       type: Boolean,
       default: false
     },
     value: {
-      type: String
+      type: [String, Array]
     },
     folder: {
       type: String,
@@ -63,7 +69,7 @@ export default {
     },
     dialogTitle: {
       type: String,
-      default: 'Выбор иконки группы'
+      default: 'Выбор изображения'
     },
     maxWidthDialog: {
       type: Number,
@@ -78,8 +84,13 @@ export default {
   }),
   methods: {
     ...mapActions(['getImageUrls']),
+    isSelectedImage(image) {
+      if (Array.isArray(this.selected)) return this.selected.includes(image.url)
+      else return this.selected === image.url
+    },
     select(image) {
       if (this.multiple) {
+        this.selected = [image.url]
       } else {
         if (this.selected === image.url) this.selected = null
         else this.selected = image.url
@@ -89,6 +100,7 @@ export default {
       this.getImageUrls(this.folder)
         .then(res => {
           this.images = res
+          this.selected = this.value
           this.dialog = true
         })
         .catch(e => {
@@ -96,7 +108,7 @@ export default {
         })
     },
     save() {
-      this.$emit('input', this.selected)
+      this.$emit('change', this.selected)
       this.dialog = false
     },
     close() {
@@ -104,7 +116,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['baseUrl'])
+    ...mapGetters(['baseUrl']),
+    filteredImages() {
+      return this.images
+    }
   }
 }
 </script>

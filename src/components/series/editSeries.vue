@@ -2,12 +2,12 @@
   <v-container>
     <v-row>
       <v-col>
-        <detail-form
+        <series-form
           :formTitle="formTitle"
           @form-submit="submit"
           @deletebtn="deleteItem"
           :loading="loading"
-          :detail="detail"
+          :series="series"
         />
       </v-col>
     </v-row>
@@ -16,61 +16,61 @@
 
 <script>
 import { mapActions } from 'vuex'
-import detailForm from './detailForm'
+import seriesForm from './form/index.vue'
 
 export default {
-  name: 'editDetail',
+  name: 'editSeries',
+  components: {
+    seriesForm
+  },
   props: ['id'],
   data: () => ({
     loading: false,
-    detail: {}
+    series: {}
   }),
-  components: {
-    detailForm
-  },
   created() {
-    if (!this.isNewDetail) {
-      this.getDetail()
+    if (!this.isNewSeries) {
+      this.getSeries()
     }
   },
   computed: {
-    isNewDetail() {
+    isNewSeries() {
       return !this.id
     },
     formTitle() {
-      return this.isNewDetail ? 'Новая запись' : 'Редактировать запись'
+      return this.isNewSeries ? 'Новая запись' : 'Редактировать запись'
     }
   },
   methods: {
-    ...mapActions(['createDetail', 'getDetailById', 'updateDetail', 'deleteDetail']),
-    getDetail() {
+    ...mapActions(['createSeries', 'getSeriesById', 'updateSeries', 'deleteSeries']),
+    getSeries() {
       this.loading = true
-      this.getDetailById(this.id)
-        .then(detail => (this.detail = detail))
+      this.getSeriesById(this.id)
+        .then(res => (this.series = res))
         .catch(e => this.$store.commit('setError', e.message))
         .finally(() => (this.loading = false))
     },
     submit(val) {
       this.loading = true
-      if (this.isNewDetail) {
-        this.createDetail(val)
-          .then(() => this.$router.push('/details'))
+      if (this.isNewSeries) {
+        this.createSeries(val)
+          .then(() => this.$router.push('/series'))
           .catch(e => this.$store.commit('setError', e.message))
           .finally(() => (this.loading = false))
       } else {
         // отправка формы если бренд редактируется
-        this.updateDetail(val)
-          .then(() => this.$router.push('/details'))
+        this.updateSeries(val)
+          .then(() => this.$router.push('/series'))
           .catch(e => this.$store.commit('setError', e.message))
           .finally(() => (this.loading = false))
       }
     },
     deleteItem() {
-      if (!this.isNewDetail) {
+      if (!this.isNewSeries) {
         this.loading = true
-        this.deleteDetail(this.id).finally(() => {
+        this.deleteSeries(this.id).finally(() => {
           this.loading = false
-          this.$router.push('/details')
+          this.$router.push('/series')
         })
       }
     }

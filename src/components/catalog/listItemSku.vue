@@ -3,7 +3,14 @@
     <v-card elevation="3" width="100%">
       <div class="catalog-list-item">
         <div class="image-wrapper">
-          <v-img :src="mockLink" height="150px" width="150px" contain />
+          <v-img
+            :src="baseUrl + item.images[0]"
+            :transition="false"
+            height="150px"
+            width="150px"
+            decoding="sync"
+            contain
+          />
         </div>
         <div class="content-wrapper">
           <v-card-title>{{ item.name }}</v-card-title>

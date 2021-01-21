@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import catalogRoutes from './catalogRoutes'
 import priceRoutes from './priceRoutes'
 import detailRoutes from './detailRoutes'
+import seriesRouter from './seriesRouter'
 
 import homePage from '@/components/homePage'
 import allImages from '@/components/allImages/index.vue'
@@ -14,6 +15,7 @@ const routes = [
   ...catalogRoutes,
   ...priceRoutes,
   ...detailRoutes,
+  ...seriesRouter,
   {
     path: '/',
     name: 'homePage',

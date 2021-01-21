@@ -5,11 +5,18 @@ export default {
   state: {
     catalogList: [],
     parents: [],
-    allCatalogItems: []
+    allCatalogItems: [],
+    volumeTypes: [0.1, 0.25, 0.5, 0.7, 1, 3],
+    abvs: [40, 36.6, 24, 12, 0],
+    skuTypes: ['Классическая', 'Какая-то другая, не классическая'],
+    segments: ['Эконом', 'Премиум', 'Супер премиум']
   },
   mutations: {
     setCatalogList(state, payload) {
       state.catalogList = payload
+    },
+    clearCatalog(state) {
+      state.catalogList = Object.assign([])
     },
     addToAllCatalogItems(state, items) {
       state.allCatalogItems = items.map(item => ({
@@ -102,6 +109,10 @@ export default {
       }))
     },
     parentById: ({ parents }) => id => parents.find(item => item._id === id),
-    allCatalogItems: ({ allCatalogItems }) => allCatalogItems
+    allCatalogItems: ({ allCatalogItems }) => allCatalogItems,
+    volumeTypes: ({ volumeTypes }) => volumeTypes,
+    skuTypes: ({ skuTypes }) => skuTypes,
+    allSegments: ({ segments }) => segments,
+    abvs: ({abvs}) => abvs
   }
 }
