@@ -27,6 +27,10 @@ export default {
   computed: {
     ...mapGetters(['error'])
   },
+  created() {
+    console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+    console.log('process.env.API_URL', process.env.BASE_URL)
+  },
   methods: {
     ...mapMutations(['clearError'])
   }
