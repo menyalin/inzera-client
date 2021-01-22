@@ -15,6 +15,7 @@
       <v-card-text>
         <v-text-field label="Название" v-model="catalogItem.name" />
         <v-text-field
+          v-if="type === 'item'"
           label="Короткое название для блока с аналогами"
           v-model="catalogItem.nameForSeries"
         />
