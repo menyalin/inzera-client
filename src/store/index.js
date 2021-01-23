@@ -19,6 +19,7 @@ export default new Vuex.Store({
     loading: false,
     appLoading: false,
     error: null,
+    baseUrl: process.env.VUE_APP_API_URL
     currentDate: moment().format('YYYY-MM-DD')
   },
   mutations: {
@@ -50,7 +51,7 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    baseUrl: () => 'http://localhost:3000/api/',
+    baseUrl: ({baseUrl}) => baseUrl,
     error: ({ error }) => error,
     appLoading: ({ appLoading }) => appLoading,
     loading: ({ loading }) => loading,

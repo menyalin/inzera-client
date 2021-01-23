@@ -28,11 +28,6 @@ export default {
   computed: {
     ...mapGetters(['error'])
   },
-  created() {
-    console.log('process.env.NODE_ENV', process.env.NODE_ENV)
-    console.log('process.env.VUE_APP_API_URL', process.env.VUE_APP_API_URL)
-    console.log('api', api)
-  },
   methods: {
     ...mapMutations(['clearError'])
   }

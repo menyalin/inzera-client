@@ -36,10 +36,7 @@
 <script>
 export default {
   name: 'listItemSku',
-  data: () => ({
-    mockLink:
-      'https://saranskiy.com/uploads/products/derevenjka/vodka/zimnyaya/new/Derevenka_zimnaya_1.jpg'
-  }),
+  data: () => ({}),
   props: {
     item: Object,
     baseUrl: String
