@@ -15,7 +15,7 @@
         text-color="white"
         :style="{ transform: 'rotate(-25deg)' }"
         class="mt-6"
-        v-if="item.prices[0].isPromo"
+        v-if="item.prices.length && item.prices[0].isPromo"
       >
         Скидка {{ item.prices[0].discount }}%
       </v-chip>

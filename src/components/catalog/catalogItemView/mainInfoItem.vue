@@ -1,7 +1,7 @@
 <template>
   <v-container class="wrapper">
     <h3 class="pb-2">{{ item.name }}</h3>
-    <div v-if="Object.keys(item.company).length">Производитель: {{ item.company.name }}</div>
+    <div v-if="item.company && item.company.name">Производитель: {{ item.company.name }}</div>
     <div v-if="item.skuType">Тип: {{ item.skuType }}</div>
     <div v-if="item.abv">Крепость: {{ item.abv }}%</div>
     <div v-if="item.segment">Сегмент: {{ item.segment }}</div>
@@ -69,8 +69,5 @@ export default {
 }
 .wrapper > div {
   padding: 8px 10px;
-}
-.series {
-  /* background-color: greenyellow; */
 }
 </style>

@@ -1,14 +1,14 @@
 <template>
   <div class="detail-info-wrapper">
-    <v-expansion-panels accordion>
-      <v-expansion-panel v-for="i of fieldsArray" :key="i.value">
+    <v-expansion-panels focusable v-if="isExistData">
+      <v-expansion-panel v-for="item of fieldsArray" :key="item.value">
         <v-expansion-panel-header>
           <span class="panel-title">
-            {{ i.title }}
+            {{ item.title }}
           </span>
         </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          {{ i.description }}
+        <v-expansion-panel-content class="pt-4">
+          {{ item.description }}
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -33,15 +33,20 @@ export default {
   },
   computed: {
     fieldsArray() {
-      return this.settings.map(field => {
-        if (Object.keys(this.item[field.value]).length) {
-          return {
-            title: field.title,
-            name: this.item[field.value].name,
-            description: this.item[field.value].description
+      return this.settings
+        .map(field => {
+          if (!!this.item[field.value] && Object.keys(this.item[field.value]).length) {
+            return {
+              title: field.title,
+              name: this.item[field.value].name,
+              description: this.item[field.value].description
+            }
           }
-        }
-      })
+        })
+        .filter(item => !!item && !!item.description)
+    },
+    isExistData() {
+      return this.settings.some(field => this.item[field.value] && this.item[field.value].name)
     }
   }
 }
