@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment'
+import router from '../router'
 
 import api from '@/api'
 import catalog from './catalogModule'
@@ -16,6 +17,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    token: localStorage.getItem('token') || null,
     loading: false,
     appLoading: false,
     error: null,
@@ -34,6 +36,15 @@ export default new Vuex.Store({
     },
     setCurrentDate(state, payload) {
       state.currentDate = payload
+    },
+    setToken(state, payload) {
+      state.token = payload
+      localStorage.setItem('token', payload)
+    },
+    logOut(state) {
+      localStorage.removeItem('token')
+      state.token = null
+      // router.push('/')
     }
   },
   actions: {
@@ -48,6 +59,27 @@ export default new Vuex.Store({
           .then(response => resolve(response.data))
           .catch(e => reject(e))
       })
+    },
+    signUp(_, payload) {
+      return new Promise((resolve, reject) => {
+        api
+          .post('/auth/signUp', payload)
+          .then(({ data }) => resolve(data))
+          .catch(e => reject(e))
+      })
+    },
+    signIn({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        api
+          .post('/auth/signIn', payload)
+          .then(res => {
+            commit('setToken', res.data.token)
+            resolve(res)
+          })
+          .catch(e => {
+            reject(e)
+          })
+      })
     }
   },
   getters: {
@@ -55,7 +87,9 @@ export default new Vuex.Store({
     error: ({ error }) => error,
     appLoading: ({ appLoading }) => appLoading,
     loading: ({ loading }) => loading,
-    currentDate: ({ currentDate }) => currentDate
+    currentDate: ({ currentDate }) => currentDate,
+    isLoggedIn: ({ token }) => !!token,
+    token: ({ token }) => token
   },
   modules: {
     catalog,

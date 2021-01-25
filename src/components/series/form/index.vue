@@ -109,10 +109,7 @@ export default {
         if (!!val && val._id) {
           this.localSeries = { ...val }
           if (!!val.sku.length) {
-            this.getCatalog({ skuArray: val.sku }).then(res => {
-              console.log(res)
-              this.addToTmpSku(res)
-            })
+            this.getCatalog({ skuArray: val.sku }).then(res => this.addToTmpSku(res))
           }
         }
       },

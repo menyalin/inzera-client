@@ -1,6 +1,6 @@
 <template>
   <div class="detail-info-wrapper">
-    <v-expansion-panels focusable v-if="isExistData">
+    <v-expansion-panels v-if="isExistData" class="ma-1 pa-2">
       <v-expansion-panel v-for="item of fieldsArray" :key="item.value">
         <v-expansion-panel-header>
           <span class="panel-title">
