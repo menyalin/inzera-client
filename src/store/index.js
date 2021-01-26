@@ -10,7 +10,16 @@ import details from './detailModule'
 import series from './seriesModule'
 
 const initPlugin = store => {
-  store.dispatch('initStore')
+  if (store.getters.token) {
+    store.commit('setAppLoading', true)
+    Promise.all([
+      store.dispatch('getUserData'),
+      store.dispatch('getCatalogGroups'),
+      store.dispatch('getAllDetails')
+    ])
+      .catch(e => {})
+      .finally(() => store.commit('setAppLoading', false))
+  }
 }
 
 Vue.use(Vuex)
@@ -25,6 +34,9 @@ export default new Vuex.Store({
     currentDate: moment().format('YYYY-MM-DD')
   },
   mutations: {
+    setAppLoading(state, payload) {
+      state.appLoading = payload
+    },
     setLoading(state, payload) {
       state.loading = payload
     },
@@ -44,7 +56,7 @@ export default new Vuex.Store({
     logOut(state) {
       localStorage.removeItem('token')
       state.token = null
-      // router.push('/')
+      router.push('/auth/login')
     }
   },
   actions: {
@@ -60,12 +72,23 @@ export default new Vuex.Store({
           .catch(e => reject(e))
       })
     },
-    signUp(_, payload) {
+    signUp({ commit }, payload) {
       return new Promise((resolve, reject) => {
         api
           .post('/auth/signUp', payload)
           .then(({ data }) => resolve(data))
           .catch(e => reject(e))
+      })
+    },
+    getUserData({ commit }) {
+      return new Promise((resolve, reject) => {
+        api
+          .get('/auth/user')
+          .then(res => resolve(res))
+          .catch(e => {
+            if (e.response.status === 511) commit('logOut')
+            reject(e)
+          })
       })
     },
     signIn({ commit }, payload) {
@@ -76,9 +99,7 @@ export default new Vuex.Store({
             commit('setToken', res.data.token)
             resolve(res)
           })
-          .catch(e => {
-            reject(e)
-          })
+          .catch(e => reject(e))
       })
     }
   },

@@ -30,11 +30,7 @@ export default {
     ...mapGetters(['error'])
   },
   methods: {
-    ...mapMutations(['clearError']),
-    logOut() {
-      this.$store.commit('logOut')
-      this.$router.push('/auth/login')
-    }
+    ...mapMutations(['clearError', 'logOut'])
   }
 }
 </script>

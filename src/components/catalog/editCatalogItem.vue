@@ -47,7 +47,7 @@ export default {
       newGroup.type = this.type
       this.newCatalogItem(newGroup)
         .then(res => {
-          this.$router.push(`/catalog${this.parent ? '/' + this.parent : ''}`)
+          this.$router.go(-1)
         })
         .catch(e => this.$store.commit('setError', e.message))
         .finally(() => (this.loading = false))

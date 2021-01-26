@@ -33,9 +33,6 @@ export default {
     }
   },
   actions: {
-    initStore({ dispatch }) {
-      dispatch('getCatalogGroups')
-    },
     getCatalogGroups({ commit }) {
       api
         .get('/catalog', { params: { allGroups: true } })

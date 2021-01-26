@@ -39,9 +39,6 @@ export default {
     mainInfoItem,
     detailInfoItem
   },
-  // created() {
-  //   this.getCatalogItem()
-  // },
   watch: {
     $route: {
       handler: function() {
