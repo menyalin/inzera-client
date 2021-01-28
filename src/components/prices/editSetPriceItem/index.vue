@@ -7,6 +7,8 @@
           @form-submit="submit"
           :formTitle="formTitle"
           :setPrice="setPrice"
+          @deletebtn="deleteItem"
+          :loading="loading"
         />
       </v-col>
     </v-row>
@@ -20,7 +22,8 @@ import setPriceForm from './setPriceForm.vue'
 export default {
   name: 'editSetPriceItem',
   data: () => ({
-    setPrice: {}
+    setPrice: {},
+    loading: false
   }),
   props: {
     id: String,
@@ -47,14 +50,29 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getCatalogItemsForAutocomplete', 'createSetPrice', 'getSetPriceById']),
+    ...mapActions([
+      'getCatalogItemsForAutocomplete',
+      'createSetPrice',
+      'updateSetPrice',
+      'getSetPriceById',
+      'deleteSetPrice'
+    ]),
     cancel() {
       this.$router.go(-1)
     },
-    submit(newSetPrice) {
-      this.createSetPrice(newSetPrice).then(() => {
-        this.$router.push('/prices')
-      })
+    deleteItem() {
+      if (this.id) {
+        this.loading = true
+        this.deleteSetPrice(this.id).finally(() => {
+          this.loading = false
+          this.$router.push('/prices')
+        })
+      }
+    },
+    submit(setPrice) {
+      if (this.id) {
+        this.updateSetPrice(setPrice).then(() => this.$router.push('/prices'))
+      } else this.createSetPrice(setPrice).then(() => this.$router.push('/prices'))
     }
   }
 }

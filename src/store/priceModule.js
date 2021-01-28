@@ -20,6 +20,10 @@ export default {
     },
     deleteSetPrice(state, id) {
       state.setPrices = state.setPrices.filter(item => item._id !== id)
+    },
+    updateSetPrice(state, payload) {
+      state.setPrices = state.setPrices.filter(item => item._id !== payload._id)
+      state.setPrices.push(payload)
     }
   },
   actions: {
@@ -56,6 +60,20 @@ export default {
         .delete(`/price/setPrices/${setPriceId}`)
         .then(() => commit('deleteSetPrice', setPriceId))
         .catch(e => commit('setError', e.message))
+    },
+    updateSetPrice({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        api
+          .put(`/price/setPrices/${payload._id}`, payload)
+          .then(({ data }) => {
+            commit('updateSetPrice', data)
+            resolve(data)
+          })
+          .catch(e => {
+            commit('setError', e.message)
+            reject(e)
+          })
+      })
     },
     createSetPrice({ commit }, newSetPrice) {
       return new Promise((resolve, reject) => {

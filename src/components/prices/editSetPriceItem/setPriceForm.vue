@@ -1,11 +1,8 @@
 <template>
   <form @submit.prevent="submitForm">
-    <v-card>
+    <v-card :loading="loading">
       <v-card-title>{{ formTitle }}</v-card-title>
       <v-card-text>
-        <v-alert v-if="id" type="info" text>
-          Редактирование пока не работает, можно только посмотреть :)
-        </v-alert>
         <div class="settings">
           <div class="setting-child">
             <date-input label="Дата начала*" v-model="startDate" hide-details />
@@ -89,30 +86,18 @@
           </v-data-table>
         </div>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn @click="$emit('cancel')" color="primary">Отмена</v-btn>
-        <v-btn type="submit" color="primary" :disabled="!formValid || loading">Сохранить</v-btn>
-      </v-card-actions>
+      <card-buttons
+        :submitDisabled="!formValid"
+        @cancel="cancel"
+        @deletebtn="deletebtn"
+        :showDeleteBtn="!!id"
+      />
     </v-card>
   </form>
 </template>
 
 <script>
-/*
-@cancel
-@form-submit
-
-Форма -
-    startDate
-    endDate
-    description
-    prices:
-        skuId
-        price
-        oldPrice
-
-*/
+import cardButtons from '@/components/common/cardButtons'
 import dateInput from '@/components/common/dateInput/dateInput'
 import { mapGetters } from 'vuex'
 
@@ -137,7 +122,8 @@ export default {
   props: {
     type: String,
     formTitle: String,
-    setPrice: Object
+    setPrice: Object,
+    loading: Boolean
   },
   watch: {
     setPrice: {
@@ -157,7 +143,8 @@ export default {
     }
   },
   components: {
-    dateInput
+    dateInput,
+    cardButtons
   },
   computed: {
     ...mapGetters(['allCatalogItems']),
@@ -176,15 +163,18 @@ export default {
         tmpArrayOfIds.length === this.prices.length &&
         tmpArrayOfIds.length === new Set(tmpArrayOfIds).size
 
-      return startDate && desc && isValidPrices && !this.id
-    },
-    loading() {
-      return false
+      return startDate && desc && isValidPrices
     }
   },
   methods: {
     addRow() {
       this.prices.push({})
+    },
+    cancel() {
+      this.$router.go(-1)
+    },
+    deletebtn() {
+      this.$emit('deletebtn')
     },
     deleteSelectedRow() {
       this.prices = this.prices.filter(
@@ -194,6 +184,7 @@ export default {
     submitForm() {
       if (this.formValid) {
         const setPrice = {
+          _id: this.id,
           startDate: this.startDate,
           endDate: this.endDate,
           description: this.description,

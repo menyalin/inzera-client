@@ -7,19 +7,11 @@
           :items="allSetPrices"
           class="elevation-1"
           dense
+          @click:row="rowClick"
           :items-per-page="-1"
         >
           <template v-slot:top>
             <list-header @add="newSetPrice" @refresh="refresh" />
-          </template>
-          <!-- eslint-disable-next-line -->
-          <template v-slot:item.actions="{ item }">
-            <v-icon @click="rowClick(item)" class="mr-2">
-              mdi-pencil
-            </v-icon>
-            <v-icon @click="deleteSetPrice(item._id)" color="warning">
-              mdi-delete
-            </v-icon>
           </template>
         </v-data-table>
       </v-col>
@@ -38,8 +30,7 @@ export default {
       { value: 'createdAtFormatted', text: 'Дата создания' },
       { value: 'startDateFormatted', text: 'Начало' },
       { value: 'endDateFormatted', text: 'Завершение', sortable: false },
-      { value: 'description', text: 'Описание', sortable: false },
-      { value: 'actions', width: '100px', sortable: false, align: 'right' }
+      { value: 'description', text: 'Описание', sortable: false }
     ]
   }),
   components: {

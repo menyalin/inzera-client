@@ -13,7 +13,9 @@
           />
         </div>
         <div class="content-wrapper">
-          <v-card-title>{{ item.name }}</v-card-title>
+          <v-card-title
+            >{{ item.name }} <small class="pl-3" v-if="!item.isActive">(Скрыто)</small>
+          </v-card-title>
           <v-card-subtitle v-if="!!item.prices[0]">
             <span class="new-price">{{ +item.prices[0].price | currency('₽', 2) }}</span>
             <span class="old-price">{{ +item.prices[0].oldPrice | currency('₽', 2) }}</span>
