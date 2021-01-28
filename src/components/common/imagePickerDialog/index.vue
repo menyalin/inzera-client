@@ -8,21 +8,20 @@
         <v-card-title>
           {{ dialogTitle }}
           <v-spacer />
-          <v-text-field label="Поиск по названию" v-model="search" class="px-3" />
+          <v-text-field label="Поиск по названию" v-model.trim="search" class="px-3" />
         </v-card-title>
 
         <v-card-text>
-          {{ selected }}
           <div class="gallery-wrapper">
             <div
               v-for="image of filteredImages"
-              class="gallery-item ma-2"
+              class="gallery-item text-center"
               :class="{ selected: isSelectedImage(image) }"
               :key="image.url"
               @click="select(image)"
             >
               <small>{{ image.name }}</small>
-              <v-img :src="baseUrl + image.url" max-width="200" height="200" contain />
+              <v-img :src="baseUrl + image.url" max-width="200" max-height="280" contain />
             </div>
           </div>
         </v-card-text>
@@ -90,7 +89,9 @@ export default {
     },
     select(image) {
       if (this.multiple) {
-        this.selected = [image.url]
+        if (this.selected.includes(image.url))
+          this.selected = this.selected.filter(item => item !== image.url)
+        else this.selected = [image.url]
       } else {
         if (this.selected === image.url) this.selected = null
         else this.selected = image.url
@@ -118,7 +119,9 @@ export default {
   computed: {
     ...mapGetters(['baseUrl']),
     filteredImages() {
-      return this.images
+      if (this.search) {
+        return this.images.filter(image => image.url.toLowerCase().includes(this.search.toLowerCase()))
+      } else return this.images
     }
   }
 }
@@ -131,9 +134,13 @@ export default {
 }
 .gallery-item {
   flex-basis: 90px;
+  box-sizing: border-box;
+  /* padding: 15px; */
+  margin: 15px;
 }
 .selected {
-  border: 2px solid gray;
-  border-radius: 4px;
+  /* border: 1px solid lightgray;
+  border-radius: 4px; */
+  box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.5);
 }
 </style>
