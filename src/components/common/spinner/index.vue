@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col class="spinner-wrapper">
-        <v-progress-circular :size="100" color="red" indeterminate :width="8" />
+        <v-progress-circular :size="100" color="primary" indeterminate :width="8" />
       </v-col>
     </v-row>
   </v-container>

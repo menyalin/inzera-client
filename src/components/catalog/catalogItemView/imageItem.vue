@@ -10,15 +10,10 @@
       aspect-ratio="1"
       @click="dialog = true"
     >
-      <v-chip
-        color="red"
-        text-color="white"
-        :style="{ transform: 'rotate(-25deg)' }"
-        class="mt-6"
+      <discount-label
         v-if="item.prices.length && item.prices[0].isPromo"
-      >
-        Скидка {{ item.prices[0].discount }}%
-      </v-chip>
+        :discount="item.prices[0].discount"
+      />
     </v-img>
     <v-dialog v-model="dialog" max-width="1200">
       <v-card>
@@ -43,6 +38,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import discountLabel from '../discountLabel'
+
 export default {
   name: 'imageItem',
   data: () => ({
@@ -52,6 +49,9 @@ export default {
     item: {
       type: Object
     }
+  },
+  components: {
+    discountLabel
   },
   computed: {
     ...mapGetters(['baseUrl']),

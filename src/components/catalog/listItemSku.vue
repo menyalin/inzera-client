@@ -10,7 +10,12 @@
             width="150px"
             decoding="sync"
             contain
-          />
+          >
+            <discount-label
+              v-if="item.prices.length && item.prices[0].isPromo"
+              :discount="item.prices[0].discount"
+            />
+          </v-img>
         </div>
         <div class="content-wrapper">
           <v-card-title
@@ -36,9 +41,14 @@
 </template>
 
 <script>
+import discountLabel from './discountLabel'
+
 export default {
   name: 'listItemSku',
   data: () => ({}),
+  components: {
+    discountLabel
+  },
   props: {
     item: Object,
     baseUrl: String

@@ -1,13 +1,13 @@
 <template>
   <div class="detail-info-wrapper">
-    <v-expansion-panels v-if="isExistData" class="ma-1 pa-2">
-      <v-expansion-panel v-for="item of fieldsArray" :key="item.value">
+    <v-expansion-panels v-if="isExistData" focusable>
+      <v-expansion-panel v-for="item of fieldsArray" :key="item.value" class="ma-1">
         <v-expansion-panel-header>
           <span class="panel-title">
             {{ item.title }}
           </span>
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="pt-4">
+        <v-expansion-panel-content>
           {{ item.description }}
         </v-expansion-panel-content>
       </v-expansion-panel>
