@@ -4,6 +4,7 @@
       <div class="catalog-list-item">
         <div class="image-wrapper">
           <v-img
+            v-if="item.images && item.images.length"
             :src="baseUrl + item.images[0]"
             :transition="false"
             height="150px"

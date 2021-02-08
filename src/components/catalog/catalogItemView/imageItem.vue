@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-img
-      v-if="isExistItem && !!item.images.length"
+      v-if="isExistItem && !!item.images && !!item.images.length"
       width="250"
       height="350"
       contain
@@ -22,7 +22,7 @@
         </v-card-title>
         <v-card-text class="center image-dialog-wrapper">
           <v-img
-            v-if="isExistItem && !!item.images.length"
+            v-if="isExistItem && !!item.images && !!item.images.length"
             max-width="800"
             max-height="650"
             contain

@@ -89,7 +89,7 @@ export default {
     },
     select(image) {
       if (this.multiple) {
-        if (this.selected.includes(image.url))
+        if (this.selected && this.selected.includes(image.url))
           this.selected = this.selected.filter(item => item !== image.url)
         else this.selected = [image.url]
       } else {
@@ -119,9 +119,9 @@ export default {
   computed: {
     ...mapGetters(['baseUrl']),
     filteredImages() {
-      if (this.search) {
-        return this.images.filter(image => image.url.toLowerCase().includes(this.search.toLowerCase()))
-      } else return this.images
+      return this.search
+        ? this.images.filter(image => image.url.toLowerCase().includes(this.search.toLowerCase()))
+        : this.images
     }
   }
 }
