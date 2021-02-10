@@ -10,6 +10,7 @@
           :parentItems="parentItems(type)"
           @submit-form="submit"
           @cancel-form="cancel"
+          @remove-catalog="removeCatalog"
           :title="formTitle"
         />
       </v-col>
@@ -42,6 +43,14 @@ export default {
   },
   methods: {
     ...mapActions(['getCatalog', 'newCatalogItem']),
+    removeCatalog(id) {
+      this.loading = true
+      this.$store
+        .dispatch('removeCatalog', id)
+        .then(() => this.$router.go(-1))
+        .catch(e => this.$store.commit('setError', e.message))
+        .finally(() => (this.loading = false))
+    },
     submit(newGroup) {
       this.loading = true
       newGroup.type = this.type

@@ -9,6 +9,7 @@
       :src="baseUrl + item.images[0]"
       aspect-ratio="1"
       @click="dialog = true"
+      :style="{ cursor: 'pointer' }"
     >
       <discount-label
         v-if="item.prices.length && item.prices[0].isPromo"

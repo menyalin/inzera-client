@@ -109,7 +109,17 @@
           v-model="catalogItem.containSku"
         />
       </v-card-text>
+
       <v-card-actions>
+        <v-btn
+          v-if="!isNewItem"
+          color="warning"
+          class="mx-2"
+          @click="$emit('remove-catalog', catalogItem._id)"
+        >
+          Удалить
+          <v-icon>mdi-delete </v-icon>
+        </v-btn>
         <image-picker-dialog
           v-if="type === 'group'"
           buttonText="Иконка группы"
@@ -192,7 +202,7 @@ export default {
       return this.type === 'group'
     },
     isNewItem() {
-      return !!this.updatedItem._id
+      return !this.catalogItem._id
     }
   },
   props: {

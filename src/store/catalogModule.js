@@ -70,6 +70,14 @@ export default {
           .catch(e => reject(e))
       })
     },
+    removeCatalog(_, id) {
+      return new Promise((resolve, reject) => {
+        api
+          .delete(basePath + '/' + id)
+          .then(response => resolve(response.data))
+          .catch(e => reject(e))
+      })
+    },
     getCatalogItemById({ getters }, id) {
       return new Promise((resolve, reject) => {
         //
@@ -110,6 +118,6 @@ export default {
     volumeTypes: ({ volumeTypes }) => volumeTypes,
     skuTypes: ({ skuTypes }) => skuTypes,
     allSegments: ({ segments }) => segments,
-    abvs: ({abvs}) => abvs
+    abvs: ({ abvs }) => abvs
   }
 }
